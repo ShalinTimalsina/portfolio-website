@@ -17,8 +17,18 @@ export function HeroSection() {
 
   useEffect(() => {
     const handleExit = () => setIsTerminalOpen(false)
+    const handleOpen = () => {
+      setIsTerminalOpen(true)
+      window.scrollTo({ top: 0, behavior: "smooth" })
+    }
+    
     window.addEventListener("term-exit", handleExit)
-    return () => window.removeEventListener("term-exit", handleExit)
+    window.addEventListener("term-open", handleOpen)
+    
+    return () => {
+      window.removeEventListener("term-exit", handleExit)
+      window.removeEventListener("term-open", handleOpen)
+    }
   }, [])
 
   // Lock body scroll when terminal is fullscreen
@@ -53,11 +63,13 @@ export function HeroSection() {
             isTerminalOpen ? "max-w-xl" : "max-w-3xl items-center"
           )}
         >
-          {/* Status Chip */}
-          <motion.div layout className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/20 bg-primary/5 max-w-full">
-            <div className="w-2 h-2 rounded-full bg-primary animate-pulse shrink-0" />
-            <span className="text-xs font-mono text-primary font-medium tracking-tight truncate">
-              Open to opportunities <span className="hidden sm:inline">• All systems operational</span>
+          <motion.div layout className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border border-border bg-muted/50 w-fit">
+            <div className="relative flex items-center justify-center">
+              <div className="absolute w-2 h-2 rounded-full bg-primary animate-ping opacity-75" />
+              <div className="relative w-2 h-2 rounded-full bg-primary shadow-[0_0_10px_rgba(0,200,150,0.5)]" />
+            </div>
+            <span className="text-[11px] uppercase tracking-[0.15em] font-medium text-foreground">
+              Open to Opportunities
             </span>
           </motion.div>
 
@@ -111,44 +123,41 @@ export function HeroSection() {
 
         {/* Right: Terminal (Animated between inline and fullscreen) */}
         <AnimatePresence>
+          {isTerminalOpen && isTerminalExpanded && (
+            <motion.div 
+              key="terminal-backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="fixed inset-0 z-[9998] bg-background/80 backdrop-blur-md"
+              onClick={() => setIsTerminalExpanded(false)}
+            />
+          )}
           {isTerminalOpen && (
-            <>
-              {/* Fullscreen Backdrop */}
-              {isTerminalExpanded && (
-                <motion.div 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="fixed inset-0 z-[9998] bg-background/80 backdrop-blur-md"
-                  onClick={() => setIsTerminalExpanded(false)}
-                />
+            <motion.div
+              key="terminal-container"
+              layout
+              initial={{ opacity: 0, scale: 0.95, y: 20, filter: "blur(10px)" }}
+              animate={{ opacity: 1, scale: 1, y: 0, filter: "blur(0px)", x: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20, filter: "blur(10px)" }}
+              transition={{ duration: 0.4, type: "spring", bounce: 0.15 }}
+              className={cn(
+                "flex justify-end",
+                isTerminalExpanded 
+                  ? "fixed inset-4 md:inset-10 z-[9999]" 
+                  : "relative w-full z-10"
               )}
-
-              {/* The Terminal Container */}
-              <motion.div
-                layout
-                initial={{ opacity: 0, scale: 0.9, x: 20 }}
-                animate={{ opacity: 1, scale: 1, x: 0 }}
-                exit={{ opacity: 0, scale: 0.9, y: 20, filter: "blur(10px)" }}
-                transition={{ duration: 0.5, type: "spring", bounce: 0 }}
-                className={cn(
-                  "flex justify-end",
-                  isTerminalExpanded 
-                    ? "fixed inset-4 md:inset-10 z-[9999]" 
-                    : "relative w-full z-10"
-                )}
-              >
-                <TerminalPanel 
-                  onClose={() => {
-                    setIsTerminalExpanded(false)
-                    setIsTerminalOpen(false)
-                  }} 
-                  isExpanded={isTerminalExpanded}
-                  onExpand={() => setIsTerminalExpanded(!isTerminalExpanded)}
-                />
-              </motion.div>
-            </>
+            >
+              <TerminalPanel 
+                onClose={() => {
+                  setIsTerminalExpanded(false)
+                  setIsTerminalOpen(false)
+                }} 
+                isExpanded={isTerminalExpanded}
+                onExpand={() => setIsTerminalExpanded(!isTerminalExpanded)}
+              />
+            </motion.div>
           )}
         </AnimatePresence>
       </div>

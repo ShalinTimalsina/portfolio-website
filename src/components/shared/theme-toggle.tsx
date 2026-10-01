@@ -11,7 +11,12 @@ export function ThemeToggle() {
 
   useEffect(() => {
     setMounted(true)
-  }, [])
+    const handleSetTheme = (e: CustomEvent<{ theme: string }>) => {
+      setTheme(e.detail.theme)
+    }
+    window.addEventListener("set-theme" as any, handleSetTheme)
+    return () => window.removeEventListener("set-theme" as any, handleSetTheme)
+  }, [setTheme])
 
   if (!mounted) return null
 
@@ -31,20 +36,20 @@ export function ThemeToggle() {
         {theme === "dark" ? (
           <motion.div
             key="dark"
-            initial={{ opacity: 0, rotate: -90, scale: 0.5 }}
-            animate={{ opacity: 1, rotate: 0, scale: 1 }}
-            exit={{ opacity: 0, rotate: 90, scale: 0.5 }}
-            transition={{ duration: 0.2 }}
+            initial={{ opacity: 0, rotate: -180, scale: 0.5, filter: "blur(4px)" }}
+            animate={{ opacity: 1, rotate: 0, scale: 1, filter: "blur(0px)" }}
+            exit={{ opacity: 0, rotate: 180, scale: 0.5, filter: "blur(4px)" }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
           >
             <Moon className="w-5 h-5" weight="duotone" />
           </motion.div>
         ) : (
           <motion.div
             key="light"
-            initial={{ opacity: 0, rotate: 90, scale: 0.5 }}
-            animate={{ opacity: 1, rotate: 0, scale: 1 }}
-            exit={{ opacity: 0, rotate: -90, scale: 0.5 }}
-            transition={{ duration: 0.2 }}
+            initial={{ opacity: 0, rotate: 180, scale: 0.5, filter: "blur(4px)" }}
+            animate={{ opacity: 1, rotate: 0, scale: 1, filter: "blur(0px)" }}
+            exit={{ opacity: 0, rotate: -180, scale: 0.5, filter: "blur(4px)" }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
           >
             <Sun className="w-5 h-5" weight="duotone" />
           </motion.div>

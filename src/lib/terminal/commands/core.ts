@@ -40,6 +40,7 @@ export const helpCmd: CommandDefinition = {
         [{ type: "text", content: "  reboot" }, { type: "text", content: "---------" }, { type: "text", content: "Reboot the system" }],
         [{ type: "text", content: "  shutdown" }, { type: "text", content: "---------" }, { type: "text", content: "Halt, power-off or reboot the machine" }],
         [{ type: "text", content: "  exit" }, { type: "text", content: "---------" }, { type: "text", content: "Cause normal process termination" }],
+        [{ type: "text", content: "  theme <dark|light>" }, { type: "text", content: "-" }, { type: "text", content: "Switch UI theme" }],
         [{ type: "text", content: "" }, { type: "text", content: "" }, { type: "text", content: "" }],
         [{ type: "bold", color: "text-yellow-400", content: "Filters & Networking" }, { type: "text", content: "" }, { type: "text", content: "" }],
         [{ type: "text", content: "  grep" }, { type: "text", content: "---------" }, { type: "text", content: "Search pattern in text" }],
@@ -325,6 +326,32 @@ export const exitCmd: CommandDefinition = {
     if (typeof window !== "undefined") {
       window.dispatchEvent(new CustomEvent("term-exit"))
     }
+    return 0
+  }
+}
+
+export const themeCmd: CommandDefinition = {
+  name: "theme",
+  description: "Switch the system theme",
+  usage: "theme <dark|light>",
+  run: (ctx, args, io) => {
+    if (args.length < 2) {
+      io.writeError("Usage: theme <dark|light>")
+      return 1
+    }
+    
+    const requestedTheme = args[1].toLowerCase()
+    if (requestedTheme !== "dark" && requestedTheme !== "light") {
+      io.writeError("Invalid theme. Valid options: dark, light")
+      return 1
+    }
+
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("set-theme", { detail: { theme: requestedTheme } }))
+    }
+
+    io.write(`Switched to ${requestedTheme} mode.`)
+    io.dispatchMascot({ state: "success", message: requestedTheme === "dark" ? "Going dark!" : "Let there be light!" })
     return 0
   }
 }

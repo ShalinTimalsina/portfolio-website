@@ -64,7 +64,7 @@ export default function RootLayout({
         <link rel="preload" href="/mascots/character_0_reactions.png" as="image" />
       </head>
       <body
-        className={`${fontHeading.variable} ${fontBody.variable} ${fontMono.variable} antialiased selection:bg-primary/20 selection:text-primary min-h-screen bg-background text-foreground transition-colors duration-500`}
+        className={`${fontHeading.variable} ${fontBody.variable} ${fontMono.variable} antialiased selection:bg-primary/20 selection:text-primary min-h-screen bg-background text-foreground transition-colors duration-300`}
       >
         <ThemeProvider
           attribute="class"

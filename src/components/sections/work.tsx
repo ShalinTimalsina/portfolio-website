@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react"
+import React, { useRef, useState } from "react"
 import { motion } from "motion/react"
 import { ArrowUpRight, GithubLogo } from "@phosphor-icons/react"
 import Link from "next/link"
@@ -31,27 +31,54 @@ export function WorkSection({ projects }: { projects: DBProject[] }) {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6" onMouseLeave={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching" } }))}>
           {projects.map((project, i) => (
-            <motion.div
-              key={project.title}
-              id={`project-${project.id}`}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.5, delay: i * 0.1, ease: [0.32, 0.72, 0, 1] }}
-              onMouseEnter={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "starstruck", message: `Looking at ${project.title}!` } }))}
-              onMouseLeave={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching" } }))}
-              className={`group relative flex flex-col z-10 p-6 md:p-8 rounded-[24px] bg-muted border border-border overflow-hidden ${
-                i === 0 || i === 3 ? "md:col-span-2" : "md:col-span-1"
-              }`}
-              style={{
-                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06)"
-              }}
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-              
-              <div className="flex flex-col z-10 h-full">
+            <ProjectCard key={project.title} project={project} index={i} />
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function ProjectCard({ project, index: i }: { project: DBProject, index: number }) {
+  const cardRef = useRef<HTMLDivElement>(null)
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return
+    const rect = cardRef.current.getBoundingClientRect()
+    setMousePosition({ x: e.clientX - rect.left, y: e.clientY - rect.top })
+  }
+
+  return (
+    <motion.div
+      ref={cardRef}
+      id={`project-${project.id}`}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-100px" }}
+      transition={{ duration: 0.5, delay: i * 0.1, ease: [0.32, 0.72, 0, 1] }}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "starstruck", message: `Looking at ${project.title}!` } }))}
+      className={`group relative flex flex-col z-10 p-6 md:p-8 rounded-[24px] bg-muted border border-border overflow-hidden ${
+        i === 0 || i === 3 ? "md:col-span-2" : "md:col-span-1"
+      }`}
+      style={{
+        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06)"
+      }}
+    >
+      {/* Dynamic Hover Spotlight */}
+      <motion.div
+        className="pointer-events-none absolute -inset-px rounded-[24px] opacity-0 transition duration-300 group-hover:opacity-100 z-0"
+        style={{
+          background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(0, 200, 150, 0.08), transparent 40%)`,
+        }}
+      />
+      
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0" />
+      
+      <div className="flex flex-col z-10 h-full relative pointer-events-auto">
                 <div className="flex justify-between items-start gap-4 mb-4">
                   <h3 className="text-2xl font-heading font-semibold text-foreground group-hover:text-primary transition-colors duration-300">
                     {project.title}
@@ -83,9 +110,5 @@ export function WorkSection({ projects }: { projects: DBProject[] }) {
                 </div>
               </div>
             </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
   )
 }

@@ -97,6 +97,24 @@ export function TerminalPanel({ onClose, isExpanded = false, onExpand }: Termina
     scrollToBottom()
   }, [history])
 
+  // Auto-focus input when terminal mounts or is maximized
+  useEffect(() => {
+    if (!isMinimized && inputRef.current) {
+      inputRef.current.focus()
+      
+      // Small timeout for framer-motion layout animations
+      const t1 = setTimeout(() => inputRef.current?.focus(), 100)
+      
+      // Larger fallback timeout to defeat Radix UI Dialog restoreFocus taking it back during unmount
+      const t2 = setTimeout(() => inputRef.current?.focus(), 400)
+      
+      return () => {
+        clearTimeout(t1)
+        clearTimeout(t2)
+      }
+    }
+  }, [isMinimized])
+
   const appendHistory = (type: TerminalOutput["type"], content: React.ReactNode) => {
     setHistory(prev => [...prev, { id: `res-${Date.now()}-${Math.random()}`, type, content }])
   }
@@ -426,6 +444,7 @@ export function TerminalPanel({ onClose, isExpanded = false, onExpand }: Termina
               spellCheck="false"
               autoCorrect="off"
               autoCapitalize="off"
+              autoFocus
             />
           </div>
         )}

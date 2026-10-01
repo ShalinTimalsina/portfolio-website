@@ -81,6 +81,14 @@ export function CommandPalette() {
         }));
       } 
     },
+    {
+      label: "Open Terminal",
+      value: "open terminal command line bash shell",
+      icon: Terminal,
+      action: () => {
+        window.dispatchEvent(new CustomEvent("term-open"))
+      }
+    }
   ]
 
   return (

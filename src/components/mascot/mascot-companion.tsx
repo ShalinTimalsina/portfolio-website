@@ -70,25 +70,39 @@ export function MascotCompanion() {
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
         const data = imageData.data
         
-        for (let i = 0; i < data.length; i += 4) {
-          const r = data[i]
-          const g = data[i + 1]
-          const b = data[i + 2]
-          
-          const maxRb = Math.max(r, b)
-          // Chroma Key + Despill algorithm
-          if (g > maxRb) {
-            const greenness = g - maxRb
-            if (greenness > 15) {
-              // Alpha mask based on greenness
-              data[i + 3] = Math.max(0, 255 - greenness * 4)
-              // Despill: cap the green channel to remove the halo
-              data[i + 1] = maxRb
+        const CHUNK_SIZE = 50000 * 4 // Process 50,000 pixels per frame to prevent TBT
+        let i = 0
+        
+        const processChunk = () => {
+          const end = Math.min(i + CHUNK_SIZE, data.length)
+          for (; i < end; i += 4) {
+            const r = data[i]
+            const g = data[i + 1]
+            const b = data[i + 2]
+            
+            const maxRb = Math.max(r, b)
+            // Chroma Key + Despill algorithm
+            if (g > maxRb) {
+              const greenness = g - maxRb
+              if (greenness > 15) {
+                // Alpha mask based on greenness
+                data[i + 3] = Math.max(0, 255 - greenness * 4)
+                // Despill: cap the green channel to remove the halo
+                data[i + 1] = maxRb
+              }
             }
           }
+          
+          if (i < data.length) {
+            requestAnimationFrame(processChunk)
+          } else {
+            ctx.putImageData(imageData, 0, 0)
+            // Use webp to save memory if browser supports it
+            setter(canvas.toDataURL("image/webp", 0.9))
+          }
         }
-        ctx.putImageData(imageData, 0, 0)
-        setter(canvas.toDataURL("image/png"))
+        
+        requestAnimationFrame(processChunk)
       }
       img.src = src
     }

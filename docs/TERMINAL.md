@@ -53,7 +53,7 @@ Commands are registered in a flat array. Adding a command means adding one objec
 | `linkedin` | `li` | info | Opens LinkedIn profile in new tab |
 | `clear` | `cls` | navigation | Clears terminal output |
 | `history` | — | navigation | Shows command history |
-| `theme` | — | fun | Toggles dark/light theme |
+| `theme <dark/light>` | — | fun | Switches between dark and light theme |
 | `mascot` | — | fun | Triggers mascot wave animation |
 | `neofetch` | — | fun | System info card (name, stack, uptime) |
 | `matrix` | — | fun | Brief matrix rain effect (3 seconds max) |

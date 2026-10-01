@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react"
+import React, { useRef, useState } from "react"
 import { motion } from "motion/react"
 
 const skillCategories = [
@@ -40,47 +40,70 @@ export function SkillsSection() {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6" onMouseLeave={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching" } }))}>
           {skillCategories.map((category, i) => (
-            <motion.div
-              key={category.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.5, delay: category.delay, ease: [0.32, 0.72, 0, 1] }}
-              onMouseEnter={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "thinking", message: `Ah, ${category.title} tools...` } }))}
-              onMouseLeave={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching" } }))}
-              className="flex flex-col gap-6 p-6 md:p-8 rounded-[24px] bg-muted border border-border overflow-hidden relative"
-              style={{
-                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06)"
-              }}
-            >
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center gap-3">
-                  <div className={`w-2 h-2 rounded-full ${i === 0 ? "bg-primary animate-pulse shadow-[0_0_10px_rgba(0,200,150,0.5)]" : "bg-muted-foreground"}`} />
-                  <h3 className="text-xl font-heading font-semibold text-foreground">
-                    {category.title}
-                  </h3>
-                </div>
-                <p className="text-sm text-muted-foreground pl-5">
-                  {category.description}
-                </p>
-              </div>
-
-              <div className="flex flex-wrap gap-2 pt-4 mt-auto">
-                {category.skills.map(skill => (
-                  <span 
-                    key={skill} 
-                    className="px-3 py-1.5 text-xs font-mono tracking-wide rounded-md bg-surface border border-border text-muted-foreground hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 cursor-default"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            </motion.div>
+            <SkillCard key={category.title} category={category} index={i} />
           ))}
         </div>
       </div>
     </section>
+  )
+}
+
+function SkillCard({ category, index: i }: { category: typeof skillCategories[0], index: number }) {
+  const cardRef = useRef<HTMLDivElement>(null)
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return
+    const rect = cardRef.current.getBoundingClientRect()
+    setMousePosition({ x: e.clientX - rect.left, y: e.clientY - rect.top })
+  }
+
+  return (
+    <motion.div
+      ref={cardRef}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-100px" }}
+      transition={{ duration: 0.5, delay: category.delay, ease: [0.32, 0.72, 0, 1] }}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "thinking", message: `Ah, ${category.title} tools...` } }))}
+      className="group flex flex-col gap-6 p-6 md:p-8 rounded-[24px] bg-muted border border-border overflow-hidden relative"
+      style={{
+        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06)"
+      }}
+    >
+      {/* Dynamic Hover Spotlight */}
+      <motion.div
+        className="pointer-events-none absolute -inset-px rounded-[24px] opacity-0 transition duration-300 group-hover:opacity-100 z-0"
+        style={{
+          background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(0, 200, 150, 0.08), transparent 40%)`,
+        }}
+      />
+      
+      <div className="flex flex-col gap-2 relative z-10 pointer-events-auto">
+        <div className="flex items-center gap-3">
+          <div className={`w-2 h-2 rounded-full ${i === 0 ? "bg-primary animate-pulse shadow-[0_0_10px_rgba(0,200,150,0.5)]" : "bg-muted-foreground"}`} />
+          <h3 className="text-xl font-heading font-semibold text-foreground">
+            {category.title}
+          </h3>
+        </div>
+        <p className="text-sm text-muted-foreground pl-5">
+          {category.description}
+        </p>
+      </div>
+
+      <div className="flex flex-wrap gap-2 pt-4 mt-auto relative z-10 pointer-events-auto">
+        {category.skills.map(skill => (
+          <span 
+            key={skill} 
+            className="px-3 py-1.5 text-xs font-mono tracking-wide rounded-md bg-surface border border-border text-muted-foreground hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 cursor-default"
+          >
+            {skill}
+          </span>
+        ))}
+      </div>
+    </motion.div>
   )
 }
