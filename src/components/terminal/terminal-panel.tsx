@@ -38,7 +38,7 @@ function renderOutputNode(node: string | TerminalOutputNode | TerminalOutputNode
     )
   }
 
-  if (node.type === "text") return node.content
+  if (node.type === "text") return node.content as string
   if (node.type === "color") return <span className={node.color}>{node.content as string}</span>
   if (node.type === "bold") return <strong className={node.color}>{node.content as string}</strong>
   if (node.type === "link") return <a href={node.href} className="underline text-primary">{node.content as string}</a>

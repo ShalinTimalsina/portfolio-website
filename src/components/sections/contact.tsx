@@ -25,7 +25,7 @@ export function ContactSection() {
     if (!result.success) {
       const formatted: Record<string, string> = {}
       result.error.issues.forEach(issue => {
-        formatted[issue.path[0]] = issue.message
+        formatted[issue.path[0] as string] = issue.message
       })
       setErrors(formatted)
       window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "error", message: "Check the red fields!" } }))
