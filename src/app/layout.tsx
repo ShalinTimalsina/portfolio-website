@@ -79,8 +79,14 @@ export default function RootLayout({
           <MascotCompanion />
           <Toaster
             position="bottom-right"
+            theme="system"
             toastOptions={{
-              className: "bg-surface border-border text-foreground",
+              className: "!bg-surface !border-border !text-foreground",
+              style: {
+                background: "var(--color-surface, hsl(var(--surface)))",
+                border: "1px solid hsl(var(--border))",
+                color: "hsl(var(--foreground))",
+              },
             }}
           />
           <Analytics />
