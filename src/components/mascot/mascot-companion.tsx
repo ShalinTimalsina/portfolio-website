@@ -180,7 +180,7 @@ export function MascotCompanion() {
       }
     }
 
-    window.addEventListener("mousemove", throttledHandler)
+    window.addEventListener("mousemove", throttledHandler, { passive: true })
     return () => {
       window.removeEventListener("mousemove", throttledHandler)
       window.removeEventListener("mascot-action", handleMascotEvent)
@@ -269,6 +269,12 @@ export function MascotCompanion() {
           <motion.div 
             ref={containerRef}
             onClick={handleClick}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault()
+                handleClick()
+              }
+            }}
             initial={{ opacity: 0, scale: 0.5, y: 40, rotate: 10 }}
             animate={{ 
               opacity: 1, 

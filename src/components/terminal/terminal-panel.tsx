@@ -329,14 +329,15 @@ export function TerminalPanel({ onClose, isExpanded = false, onExpand }: Termina
         <div className="flex items-center gap-2">
           <div className="flex gap-2 mr-2">
             <button 
+              aria-label="Close Terminal"
               onClick={() => {
-                // If it's a shutdown, we don't allow closing manually? Actually closing is fine.
                 if (onClose) onClose()
               }}
-              className="w-3 h-3 rounded-full bg-red-500 hover:bg-red-600 transition-colors cursor-pointer" 
+              className="relative w-3 h-3 rounded-full bg-red-500 hover:bg-red-600 transition-colors cursor-pointer after:absolute after:-inset-3" 
               title="Close"
             />
             <button 
+              aria-label="Minimize Terminal"
               onClick={() => {
                 if (isExpanded && onExpand) {
                   onExpand()
@@ -345,15 +346,16 @@ export function TerminalPanel({ onClose, isExpanded = false, onExpand }: Termina
                   setIsMinimized(!isMinimized)
                 }
               }}
-              className="w-3 h-3 rounded-full bg-yellow-500 hover:bg-yellow-600 transition-colors cursor-pointer" 
+              className="relative w-3 h-3 rounded-full bg-yellow-500 hover:bg-yellow-600 transition-colors cursor-pointer after:absolute after:-inset-3" 
               title="Minimize"
             />
             <button 
+              aria-label="Maximize Terminal"
               onClick={() => {
                 setIsMinimized(false)
                 if (onExpand) onExpand()
               }}
-              className="w-3 h-3 rounded-full bg-green-500 hover:bg-green-600 transition-colors cursor-pointer" 
+              className="relative w-3 h-3 rounded-full bg-green-500 hover:bg-green-600 transition-colors cursor-pointer after:absolute after:-inset-3" 
               title="Maximize"
             />
           </div>
@@ -364,10 +366,10 @@ export function TerminalPanel({ onClose, isExpanded = false, onExpand }: Termina
         </div>
         
         <div className="flex items-center gap-3 text-muted-foreground">
-          <button onClick={() => { setIsMinimized(false); if (onExpand) onExpand(); }} className="hover:text-foreground transition-colors cursor-pointer">
+          <button aria-label="Toggle Fullscreen" onClick={() => { setIsMinimized(false); if (onExpand) onExpand(); }} className="hover:text-foreground transition-colors cursor-pointer">
             {isExpanded ? <CornersIn /> : <CornersOut />}
           </button>
-          <button onClick={() => { if (onClose) onClose(); }} className="hover:text-foreground transition-colors cursor-pointer">
+          <button aria-label="Close Terminal Header" onClick={() => { if (onClose) onClose(); }} className="hover:text-foreground transition-colors cursor-pointer">
             <X />
           </button>
         </div>
@@ -408,6 +410,7 @@ export function TerminalPanel({ onClose, isExpanded = false, onExpand }: Termina
             <input
               ref={inputRef}
               type="text"
+              aria-label="Terminal command input"
               value={input}
               onChange={(e) => {
                 const val = e.target.value

@@ -33,7 +33,7 @@ const fontMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: {
     template: "%s | Shalin Timalsina",
-    default: "Shalin Timalsina | Cloud & DevOps Engineer in making",
+    default: "Shalin Timalsina",
   },
   description: "AWS Certified Solutions Architect building cloud-native infrastructure, automated CI/CD pipelines, and secure, scalable applications.",
   icons: {
@@ -59,6 +59,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
+      <head>
+        <link rel="preload" href="/mascots/character_0_directions.png" as="image" />
+        <link rel="preload" href="/mascots/character_0_reactions.png" as="image" />
+      </head>
       <body
         className={`${fontHeading.variable} ${fontBody.variable} ${fontMono.variable} antialiased selection:bg-primary/20 selection:text-primary min-h-screen bg-background text-foreground transition-colors duration-500`}
       >
