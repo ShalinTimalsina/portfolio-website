@@ -38,9 +38,9 @@ const timeline = [
 ]
 
 const links = [
-  { label: "GitHub", href: "https://github.com/ShalinTimalsina", icon: GithubLogo },
-  { label: "LinkedIn", href: "https://linkedin.com/in/shalin-timalsina", icon: LinkedinLogo },
-  { label: "salintimalsina01@gmail.com", href: "mailto:salintimalsina01@gmail.com", icon: EnvelopeSimple },
+  { label: "GitHub", href: "https://github.com/ShalinTimalsina", icon: GithubLogo, mascotState: "success", mascotMessage: "Show me the code!" },
+  { label: "LinkedIn", href: "https://linkedin.com/in/shalin-timalsina", icon: LinkedinLogo, mascotState: "heart", mascotMessage: "Let's connect!" },
+  { label: "salintimalsina01@gmail.com", href: "mailto:salintimalsina01@gmail.com", icon: EnvelopeSimple, mascotState: "wave", mascotMessage: "Write me an email!" },
 ]
 
 export function AboutSection() {
@@ -78,7 +78,11 @@ export function AboutSection() {
             >
               <div className="flex flex-col gap-6">
                 {/* Location badge */}
-                <div className="flex items-center gap-2 text-muted-foreground">
+                <div 
+                  className="flex items-center gap-2 text-muted-foreground w-fit cursor-default"
+                  onMouseEnter={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching", message: "Current region: Kathmandu." } }))}
+                  onMouseLeave={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching" } }))}
+                >
                   <MapPin weight="bold" className="w-4 h-4 text-primary" />
                   <span className="text-sm font-medium">Kathmandu, Nepal</span>
                 </div>
@@ -111,7 +115,7 @@ export function AboutSection() {
                       href={link.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      onMouseEnter={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "heart" } }))}
+                      onMouseEnter={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: link.mascotState, message: link.mascotMessage } }))}
                       onMouseLeave={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching" } }))}
                       className="inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded-lg bg-surface border border-border text-muted-foreground hover:text-foreground hover:border-primary/30 transition-colors duration-200"
                     >
@@ -173,6 +177,14 @@ export function AboutSection() {
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true, margin: "-60px" }}
                     transition={{ duration: 0.4, delay: i * 0.08, ease: [0.32, 0.72, 0, 1] }}
+                    onMouseEnter={() => {
+                      if (item.type === "cert") {
+                        window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "starstruck", message: "Certified!" } }))
+                      } else {
+                        window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "typing", message: "Studying hard!" } }))
+                      }
+                    }}
+                    onMouseLeave={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching" } }))}
                     className="flex gap-4 py-4 relative group"
                   >
                     {/* Dot */}
