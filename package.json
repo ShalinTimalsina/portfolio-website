@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.11.3",
-    "@neondatabase/serverless": "^0.9.5",
+    "@neondatabase/serverless": "^1.2.0",
     "@phosphor-icons/react": "^2.1.10",
     "bcryptjs": "^2.4.3",
     "clsx": "^2.1.1",
