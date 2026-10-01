@@ -14,6 +14,7 @@
   
   --color-border: var(--border-default);
   --color-border-hover: var(--border-hover);
+  --color-destructive: var(--destructive);
   
   --font-sans: var(--font-body);
   --font-heading: var(--font-heading);
@@ -43,6 +44,8 @@
     /* The ONE signature accent: Mint/Emerald */
     --accent: #00C896; 
     --accent-hover: #00A67C;
+
+    --destructive: #ef4444;
     
     --radius-sm: 4px;
     --radius-md: 8px;
@@ -61,6 +64,8 @@
     
     --border-default: #27272A;
     --border-hover: #3F3F46;
+    
+    --destructive: #ef4444;
   }
 }
 
@@ -80,6 +85,21 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Prevent zoom on focus on iOS */
+  input, textarea, select {
+    font-size: 16px;
+  }
+
+  /* Prevent double tap zoom delay and native callouts */
+  button, a, [role="button"] {
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
   }
   
   h1, h2, h3, h4, h5, h6 {
@@ -140,4 +160,10 @@ input:-webkit-autofill:active {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--fg-tertiary);
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
 }

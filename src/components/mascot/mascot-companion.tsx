@@ -264,22 +264,32 @@ export function MascotCompanion() {
         )}
       </AnimatePresence>
       
-      <motion.div 
-        ref={containerRef}
-        onClick={handleClick}
-        animate={{ y: [0, -6, 0] }}
-        transition={{ 
-          y: { repeat: Infinity, duration: 4, ease: "easeInOut" },
-          default: { type: "spring", stiffness: 100, damping: 12, mass: 1 }
-        }}
-        whileHover={{ scale: 1.05, rotate: 3, y: -4 }}
-        whileTap={{ scale: 0.9, rotate: -6 }}
-        className="relative w-[120px] h-[120px] lg:w-[140px] lg:h-[140px] cursor-pointer pointer-events-auto drop-shadow-2xl"
-        style={getSpriteStyles()}
-        aria-label="Shalin's Mascot Companion"
-        role="button"
-        tabIndex={0}
-      />
+      <AnimatePresence>
+        {processedDirections && processedReactions && (
+          <motion.div 
+            ref={containerRef}
+            onClick={handleClick}
+            initial={{ opacity: 0, scale: 0.5, y: 40, rotate: 10 }}
+            animate={{ 
+              opacity: 1, 
+              scale: 1, 
+              y: [0, -6, 0], 
+              rotate: 0 
+            }}
+            transition={{ 
+              y: { repeat: Infinity, duration: 4, ease: "easeInOut", delay: 0.5 },
+              default: { type: "spring", stiffness: 150, damping: 14, mass: 1 }
+            }}
+            whileHover={{ scale: 1.05, rotate: 3, y: -4 }}
+            whileTap={{ scale: 0.9, rotate: -6 }}
+            className="relative w-[120px] h-[120px] lg:w-[140px] lg:h-[140px] cursor-pointer pointer-events-auto drop-shadow-2xl"
+            style={getSpriteStyles()}
+            aria-label="Shalin's Mascot Companion"
+            role="button"
+            tabIndex={0}
+          />
+        )}
+      </AnimatePresence>
     </div>
   )
 }
