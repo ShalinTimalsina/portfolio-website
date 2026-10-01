@@ -84,12 +84,12 @@ export function ContactSection() {
                   onMouseLeave={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching" } }))}
                   className="flex items-center gap-4 p-4 rounded-xl border border-border bg-background/50 hover:bg-muted transition-all active:scale-[0.98] group"
                 >
-                  <div className="p-3 bg-muted rounded-lg text-foreground group-hover:text-primary transition-colors">
+                  <div className="p-3 bg-muted rounded-lg text-foreground group-hover:text-primary transition-colors shrink-0">
                     <EnvelopeSimple className="w-6 h-6" />
                   </div>
-                  <div>
+                  <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium text-foreground">Email</p>
-                    <p className="text-sm text-muted-foreground">salintimalsina01@gmail.com</p>
+                    <p className="text-sm text-muted-foreground truncate">salintimalsina01@gmail.com</p>
                   </div>
                 </Link>
 
@@ -99,12 +99,12 @@ export function ContactSection() {
                   onMouseLeave={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching" } }))}
                   className="flex items-center gap-4 p-4 rounded-xl border border-border bg-background/50 hover:bg-muted transition-all active:scale-[0.98] group"
                 >
-                  <div className="p-3 bg-muted rounded-lg text-foreground group-hover:text-primary transition-colors">
+                  <div className="p-3 bg-muted rounded-lg text-foreground group-hover:text-primary transition-colors shrink-0">
                     <Phone className="w-6 h-6" />
                   </div>
-                  <div>
+                  <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium text-foreground">Phone</p>
-                    <p className="text-sm text-muted-foreground">+977-9862448516</p>
+                    <p className="text-sm text-muted-foreground truncate">+977-9862448516</p>
                   </div>
                 </Link>
                 

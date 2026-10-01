@@ -54,10 +54,10 @@ export function HeroSection() {
           )}
         >
           {/* Status Chip */}
-          <motion.div layout className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/20 bg-primary/5 w-fit">
-            <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-            <span className="text-xs font-mono text-primary font-medium tracking-tight">
-              Open to opportunities • All systems operational
+          <motion.div layout className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/20 bg-primary/5 max-w-full">
+            <div className="w-2 h-2 rounded-full bg-primary animate-pulse shrink-0" />
+            <span className="text-xs font-mono text-primary font-medium tracking-tight truncate">
+              Open to opportunities <span className="hidden sm:inline">• All systems operational</span>
             </span>
           </motion.div>
 

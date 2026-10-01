@@ -322,7 +322,7 @@ export function TerminalPanel({ onClose, isExpanded = false, onExpand }: Termina
       className={cn(
         "flex flex-col bg-background border border-border rounded-xl overflow-hidden shadow-2xl font-mono text-sm w-full",
         isExpanded ? "h-full" : "max-w-2xl",
-        isMinimized ? "h-[48px]" : (!isExpanded && "h-[400px]")
+        isMinimized ? "h-[48px]" : (!isExpanded && "h-[320px] sm:h-[400px]")
       )}
     >
       <motion.div layout="position" className="flex items-center justify-between px-4 py-3 border-b border-border bg-muted shrink-0">
