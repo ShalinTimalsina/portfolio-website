@@ -105,6 +105,14 @@ export const initialFS: INode = {
                     "socials.txt": createNode("socials.txt", "file", true, "LinkedIn: linkedin.com/in/shalin-timalsina\nGitHub: github.com/ShalinTimalsina")
                   }
                 },
+                "about": {
+                  name: "about", type: "dir", readOnly: true, permissions: "drwxr-xr-x", mtime: Date.now(), linkedSection: "about",
+                  children: {
+                    "bio.md": createNode("bio.md", "file", true, "# Shalin Timalsina\n\nCloud & DevOps Engineer in the making.\nAWS Certified Solutions Architect – Associate.\nBSc IT @ Techspire College, Kathmandu."),
+                    "certs.txt": createNode("certs.txt", "file", true, "AWS Solutions Architect – Associate (2024)\nDocker Certified – Kode Kloud (2024)\nGitHub Foundations – Datacamp (2024)\nPython/SQL – Programiz"),
+                    "education.txt": createNode("education.txt", "file", true, "BSc IT – Techspire College, Kathmandu (Present)\nSEE & +2 – Skyrider English Boarding School (Completed)")
+                  }
+                },
                 "about.txt": createNode("about.txt", "file", true, "Shalin Timalsina. Cloud & DevOps Engineer.\nBuilding infrastructure that scales, one block at a time."),
                 "resume.pdf": createNode("resume.pdf", "file", true, "BINARY_DATA")
               }

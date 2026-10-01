@@ -7,26 +7,26 @@ const skillCategories = [
   {
     title: "Daily",
     description: "Active personal projects and core stack.",
-    skills: ["Terraform", "Docker", "AWS (EC2, S3, VPC, CloudFront, Route53)", "Git", "GitHub Actions"],
+    skills: ["Terraform", "Docker", "AWS Core", "EC2 & S3", "VPC & Route53", "Git", "GitHub Actions"],
     delay: 0.1,
   },
   {
     title: "Working",
     description: "Competent, have shipped projects with.",
-    skills: ["Python", "SQL", "Linux", "FastAPI", "Ansible", "Kubernetes", "Next.js", "TypeScript"],
+    skills: ["Python", "SQL", "Linux", "FastAPI", "Node.js", "Nginx", "Next.js", "TypeScript"],
     delay: 0.2,
   },
   {
     title: "Learning",
     description: "Actively studying, not yet shipped.",
-    skills: ["TODO(Shalin): list skills you are currently learning"],
+    skills: ["Ansible", "Kubernetes", "System Design", "Monitoring"],
     delay: 0.3,
   }
 ]
 
 export function SkillsSection() {
   return (
-    <section id="skills" className="py-24 md:py-32 bg-[#09090B] min-h-[100dvh] flex flex-col">
+    <section id="skills" className="py-24 md:py-32 bg-background min-h-[100dvh] flex flex-col">
       <div className="container px-6 mx-auto max-w-7xl w-full my-auto">
         
         <div className="flex flex-col gap-4 mb-12 md:mb-16">
@@ -50,7 +50,7 @@ export function SkillsSection() {
               transition={{ duration: 0.5, delay: category.delay, ease: [0.32, 0.72, 0, 1] }}
               onMouseEnter={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "thinking", message: `Ah, ${category.title} tools...` } }))}
               onMouseLeave={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching" } }))}
-              className="flex flex-col gap-6 p-6 md:p-8 rounded-[24px] bg-[#111111] border border-[#27272A] overflow-hidden relative"
+              className="flex flex-col gap-6 p-6 md:p-8 rounded-[24px] bg-muted border border-border overflow-hidden relative"
               style={{
                 boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06)"
               }}
@@ -71,7 +71,7 @@ export function SkillsSection() {
                 {category.skills.map(skill => (
                   <span 
                     key={skill} 
-                    className={`px-3 py-1.5 text-sm rounded-md bg-[#18181B] border border-[#27272A] ${skill.startsWith("TODO") ? "text-destructive border-destructive/30 bg-destructive/10" : "text-foreground"}`}
+                    className="px-3 py-1.5 text-xs font-mono tracking-wide rounded-md bg-surface border border-border text-muted-foreground hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 cursor-default"
                   >
                     {skill}
                   </span>

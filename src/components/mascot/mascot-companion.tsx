@@ -59,9 +59,10 @@ export function MascotCompanion() {
     const removeGreenScreen = (src: string, setter: (url: string) => void) => {
       const img = new Image()
       img.onload = () => {
+        if (!img.naturalWidth || !img.naturalHeight) return
         const canvas = document.createElement("canvas")
-        canvas.width = img.width
-        canvas.height = img.height
+        canvas.width = img.naturalWidth
+        canvas.height = img.naturalHeight
         const ctx = canvas.getContext("2d", { willReadFrequently: true })
         if (!ctx) return
         
@@ -254,9 +255,9 @@ export function MascotCompanion() {
             animate={{ opacity: 1, y: 0, scale: 1, rotate: 0 }}
             exit={{ opacity: 0, y: 15, scale: 0.9, rotate: 3 }}
             transition={{ type: "spring", stiffness: 120, damping: 15, mass: 1.2 }}
-            className="absolute bottom-full right-4 mb-4 whitespace-nowrap rounded-2xl rounded-br-sm bg-background border shadow-2xl p-3 px-4 max-w-[250px]"
+            className="absolute bottom-full right-4 mb-4 rounded-2xl rounded-br-sm bg-background border shadow-2xl p-3 px-4 max-w-[250px]"
           >
-            <p className="text-sm font-medium text-foreground leading-tight">
+            <p className="text-sm font-medium text-foreground leading-tight text-wrap-pretty">
               {speech}
             </p>
           </motion.div>

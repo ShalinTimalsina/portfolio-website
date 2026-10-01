@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import { Outfit, Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/shared/theme-provider";
+import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { CommandPalette } from "@/components/shared/command-palette";
 import { ScrollProgress } from "@/components/shared/scroll-progress";
 import { Toaster } from "sonner";
+import { MascotCompanion } from "@/components/mascot/mascot-companion";
 
 // Primary heading font
 const fontHeading = Outfit({
@@ -30,9 +32,12 @@ const fontMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: {
     template: "%s | Shalin Timalsina",
-    default: "Shalin Timalsina | Cloud & DevOps Engineer",
+    default: "Shalin Timalsina | Cloud & DevOps Engineer in making",
   },
   description: "AWS Certified Solutions Architect building cloud-native infrastructure, automated CI/CD pipelines, and secure, scalable applications.",
+  icons: {
+    icon: '/icon.png',
+  },
 };
 
 export default function RootLayout({
@@ -41,9 +46,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
       <body
-        className={`${fontHeading.variable} ${fontBody.variable} ${fontMono.variable} antialiased selection:bg-primary/20 selection:text-primary min-h-screen bg-background text-foreground`}
+        className={`${fontHeading.variable} ${fontBody.variable} ${fontMono.variable} antialiased selection:bg-primary/20 selection:text-primary min-h-screen bg-background text-foreground transition-colors duration-500`}
       >
         <ThemeProvider
           attribute="class"
@@ -51,15 +56,16 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <ThemeToggle />
           <ScrollProgress />
           {children}
           <CommandPalette />
-          <Toaster 
-            theme="dark" 
-            position="bottom-right" 
+          <MascotCompanion />
+          <Toaster
+            position="bottom-right"
             toastOptions={{
-              style: { background: "#111111", border: "1px solid #27272A", color: "#F4F4F5" },
-            }} 
+              className: "bg-surface border-border text-foreground",
+            }}
           />
         </ThemeProvider>
       </body>

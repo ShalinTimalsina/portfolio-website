@@ -195,7 +195,20 @@ export function TerminalPanel({ onClose, isExpanded = false, onExpand }: Termina
       writeError: (text: string) => appendHistory("error", text),
       clear: () => setHistory([]),
       read: async () => "",
-      scrollTo: (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "center" }),
+      scrollTo: (id: string) => {
+        setTimeout(() => {
+          requestAnimationFrame(() => {
+            const el = document.getElementById(id)
+            if (!el) return
+            if (id === "contact") {
+              el.scrollIntoView({ behavior: "smooth", block: "center" })
+            } else {
+              const y = el.getBoundingClientRect().top + window.scrollY
+              window.scrollTo({ top: y, behavior: "smooth" })
+            }
+          })
+        }, 150)
+      },
       dispatchMascot: (payload: { state: MascotEventState, message?: string }) => {
         window.dispatchEvent(new CustomEvent("mascot-action", { detail: payload }))
       }
@@ -303,16 +316,16 @@ export function TerminalPanel({ onClose, isExpanded = false, onExpand }: Termina
   }
 
   return (
-    <motion.div 
+    <motion.div
       layout
-      transition={{ type: "spring", bounce: 0, duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
+      transition={{ type: "spring", stiffness: 400, damping: 30, mass: 1 }}
       className={cn(
-        "flex flex-col bg-[#09090B] border border-white/10 rounded-xl overflow-hidden shadow-2xl font-mono text-sm w-full",
+        "flex flex-col bg-background border border-border rounded-xl overflow-hidden shadow-2xl font-mono text-sm w-full",
         isExpanded ? "h-full" : "max-w-2xl",
-        isMinimized ? "h-[50px]" : (!isExpanded && "h-[400px]")
+        isMinimized ? "h-[48px]" : (!isExpanded && "h-[400px]")
       )}
     >
-      <motion.div layout="position" className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-[#121214] shrink-0">
+      <motion.div layout="position" className="flex items-center justify-between px-4 py-3 border-b border-border bg-muted shrink-0">
         <div className="flex items-center gap-2">
           <div className="flex gap-2 mr-2">
             <button 
@@ -320,14 +333,19 @@ export function TerminalPanel({ onClose, isExpanded = false, onExpand }: Termina
                 // If it's a shutdown, we don't allow closing manually? Actually closing is fine.
                 if (onClose) onClose()
               }}
-              className="w-3 h-3 rounded-full bg-red-500 hover:bg-red-600 transition-colors" 
+              className="w-3 h-3 rounded-full bg-red-500 hover:bg-red-600 transition-colors cursor-pointer" 
               title="Close"
             />
             <button 
               onClick={() => {
-                if (!isExpanded) setIsMinimized(!isMinimized)
+                if (isExpanded && onExpand) {
+                  onExpand()
+                  setIsMinimized(true)
+                } else {
+                  setIsMinimized(!isMinimized)
+                }
               }}
-              className="w-3 h-3 rounded-full bg-yellow-500 hover:bg-yellow-600 transition-colors" 
+              className="w-3 h-3 rounded-full bg-yellow-500 hover:bg-yellow-600 transition-colors cursor-pointer" 
               title="Minimize"
             />
             <button 
@@ -335,7 +353,7 @@ export function TerminalPanel({ onClose, isExpanded = false, onExpand }: Termina
                 setIsMinimized(false)
                 if (onExpand) onExpand()
               }}
-              className="w-3 h-3 rounded-full bg-green-500 hover:bg-green-600 transition-colors" 
+              className="w-3 h-3 rounded-full bg-green-500 hover:bg-green-600 transition-colors cursor-pointer" 
               title="Maximize"
             />
           </div>
@@ -346,10 +364,10 @@ export function TerminalPanel({ onClose, isExpanded = false, onExpand }: Termina
         </div>
         
         <div className="flex items-center gap-3 text-muted-foreground">
-          <button onClick={() => { setIsMinimized(false); if (onExpand) onExpand(); }} className="hover:text-foreground transition-colors">
+          <button onClick={() => { setIsMinimized(false); if (onExpand) onExpand(); }} className="hover:text-foreground transition-colors cursor-pointer">
             {isExpanded ? <CornersIn /> : <CornersOut />}
           </button>
-          <button onClick={() => { if (onClose) onClose(); }} className="hover:text-foreground transition-colors">
+          <button onClick={() => { if (onClose) onClose(); }} className="hover:text-foreground transition-colors cursor-pointer">
             <X />
           </button>
         </div>
@@ -361,12 +379,12 @@ export function TerminalPanel({ onClose, isExpanded = false, onExpand }: Termina
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ type: "spring", bounce: 0, duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
+            transition={{ type: "spring", stiffness: 400, damping: 30, mass: 1 }}
             className="flex-1 overflow-hidden flex flex-col"
           >
             <div 
               ref={scrollRef}
-              className="flex-1 p-4 overflow-y-auto scrollbar-thin flex flex-col gap-2"
+              className="flex-1 p-4 overflow-y-auto scrollbar-thin flex flex-col gap-2 cursor-text"
               onClick={() => inputRef.current?.focus()}
             >
         {history.map((item) => (

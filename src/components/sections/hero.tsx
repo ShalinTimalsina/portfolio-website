@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from "react"
+import { createPortal } from "react-dom"
 import { motion, AnimatePresence } from "motion/react"
 import { TerminalPanel } from "@/components/terminal/terminal-panel"
 import { MascotCompanion } from "@/components/mascot/mascot-companion"
@@ -10,6 +11,9 @@ import { cn } from "@/lib/utils"
 export function HeroSection() {
   const [isTerminalOpen, setIsTerminalOpen] = useState(true)
   const [isTerminalExpanded, setIsTerminalExpanded] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => setMounted(true), [])
 
   useEffect(() => {
     const handleExit = () => setIsTerminalOpen(false)
@@ -33,7 +37,7 @@ export function HeroSection() {
       {/* Background Ambient Glow */}
       <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
       
-      <motion.div layout className={cn(
+      <div className={cn(
         "container px-6 mx-auto max-w-7xl grid gap-12 lg:gap-8 items-center",
         isTerminalOpen ? "lg:grid-cols-2" : "lg:grid-cols-1 place-items-center text-center"
       )}>
@@ -70,8 +74,8 @@ export function HeroSection() {
             <button 
               onMouseEnter={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "heart", message: "Let's do it!" } }))}
               onMouseLeave={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching" } }))}
-              onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
-              className="group inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200"
+              onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth", block: "center" })}
+              className="group inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 cursor-pointer"
             >
               <EnvelopeSimple weight="bold" className="w-5 h-5 group-hover:-translate-y-0.5 transition-transform" />
               Let's build together
@@ -79,8 +83,8 @@ export function HeroSection() {
             <button 
               onMouseEnter={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "thinking", message: "Check out my work!" } }))}
               onMouseLeave={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching" } }))}
-              onClick={() => document.getElementById("work")?.scrollIntoView({ behavior: "smooth" })}
-              className="group inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-border hover:bg-muted active:scale-[0.98] transition-all duration-200 font-medium"
+              onClick={() => { const el = document.getElementById("work"); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY, behavior: "smooth" }) }}
+              className="group inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-border hover:bg-muted active:scale-[0.98] transition-all duration-200 font-medium cursor-pointer"
             >
               View Case Studies
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -88,7 +92,9 @@ export function HeroSection() {
             {!isTerminalOpen && (
               <button 
                 onClick={() => setIsTerminalOpen(true)}
-                className="group inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-primary text-primary hover:bg-primary/10 active:scale-[0.98] transition-all duration-200 font-medium"
+                onMouseEnter={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "excited", message: "Boot it up!" } }))}
+                onMouseLeave={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching" } }))}
+                className="group inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-primary text-primary hover:bg-primary/10 active:scale-[0.98] transition-all duration-200 font-medium cursor-pointer"
               >
                 <TerminalWindow weight="duotone" className="w-5 h-5" />
                 Initialize Shell
@@ -98,36 +104,39 @@ export function HeroSection() {
           
           <motion.div layout className="pt-2">
             <span className="text-sm text-muted-foreground flex items-center justify-center lg:justify-start gap-2">
-              Press <kbd className="px-2 py-0.5 rounded-md bg-muted text-xs border font-mono">⌘ K</kbd> anywhere to search
+              Press <kbd className="px-2 py-0.5 rounded-md bg-muted text-xs border font-mono">{mounted && typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform) ? "⌘" : "Ctrl"} K</kbd> anywhere to search
             </span>
           </motion.div>
         </motion.div>
 
-        {/* Right: Terminal */}
-        <AnimatePresence mode="popLayout">
+        {/* Right: Terminal (Animated between inline and fullscreen) */}
+        <AnimatePresence>
           {isTerminalOpen && (
-            <div className={cn("relative w-full flex justify-end", isTerminalExpanded && "z-50")}>
+            <>
               {/* Fullscreen Backdrop */}
-              <AnimatePresence>
-                {isTerminalExpanded && (
-                  <motion.div 
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="fixed inset-0 z-40 bg-background/80 backdrop-blur-md"
-                  />
-                )}
-              </AnimatePresence>
+              {isTerminalExpanded && (
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="fixed inset-0 z-[9998] bg-background/80 backdrop-blur-md"
+                  onClick={() => setIsTerminalExpanded(false)}
+                />
+              )}
 
-              {/* Terminal Container */}
+              {/* The Terminal Container */}
               <motion.div
+                layout
                 initial={{ opacity: 0, scale: 0.9, x: 20 }}
                 animate={{ opacity: 1, scale: 1, x: 0 }}
-                exit={{ opacity: 0, scale: 0.9, x: 20, filter: "blur(10px)" }}
-                transition={{ duration: 0.5, type: "spring", bounce: 0, ease: [0.32, 0.72, 0, 1] }}
+                exit={{ opacity: 0, scale: 0.9, y: 20, filter: "blur(10px)" }}
+                transition={{ duration: 0.5, type: "spring", bounce: 0 }}
                 className={cn(
-                  isTerminalExpanded ? "fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6" : "relative w-full"
+                  "flex justify-end",
+                  isTerminalExpanded 
+                    ? "fixed inset-4 md:inset-10 z-[9999]" 
+                    : "relative w-full z-10"
                 )}
               >
                 <TerminalPanel 
@@ -139,13 +148,10 @@ export function HeroSection() {
                   onExpand={() => setIsTerminalExpanded(!isTerminalExpanded)}
                 />
               </motion.div>
-            </div>
+            </>
           )}
         </AnimatePresence>
-      </motion.div>
-
-      {/* Mascot Companion floats globally, but originates here */}
-      <MascotCompanion />
+      </div>
     </section>
   )
 }

@@ -8,6 +8,15 @@ import {
   jsonb
 } from 'drizzle-orm/pg-core';
 
+// 0. Admin Users
+export const adminUsers = pgTable('admin_users', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  username: text('username').unique().notNull(),
+  passwordHash: text('password_hash').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
 // 1. External Articles (Blog)
 export const articles = pgTable('articles', {
   id: uuid('id').defaultRandom().primaryKey(),

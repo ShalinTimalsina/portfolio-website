@@ -2,19 +2,42 @@
 
 import React, { useState } from "react"
 import { motion } from "motion/react"
-import { EnvelopeSimple, GithubLogo, LinkedinLogo, Phone, PaperPlaneRight } from "@phosphor-icons/react"
+import { EnvelopeSimple, GithubLogo, LinkedinLogo, Phone, PaperPlaneRight, WarningCircle } from "@phosphor-icons/react"
 import Link from "next/link"
 import { toast } from "sonner"
+import { z } from "zod"
+
+const contactSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters."),
+  email: z.string().email("Please provide a valid email address."),
+  message: z.string().min(10, "Message must be at least 10 characters long.")
+})
 
 export function ContactSection() {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle")
+  const [formData, setFormData] = useState({ name: "", email: "", message: "" })
+  const [errors, setErrors] = useState<Record<string, string>>({})
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    
+    const result = contactSchema.safeParse(formData)
+    if (!result.success) {
+      const formatted: Record<string, string> = {}
+      result.error.issues.forEach(issue => {
+        formatted[issue.path[0]] = issue.message
+      })
+      setErrors(formatted)
+      window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "error", message: "Check the red fields!" } }))
+      return
+    }
+
+    setErrors({})
     setStatus("loading")
     // Fake a network request for the form simulation
     setTimeout(() => {
       setStatus("success")
+      setFormData({ name: "", email: "", message: "" })
       toast.success("200 OK: Payload delivered. I'll deploy a response soon!")
       setTimeout(() => setStatus("idle"), 3000)
     }, 1500)
@@ -44,7 +67,7 @@ export function ContactSection() {
             className="flex flex-col gap-6"
           >
             <div 
-              className="flex flex-col p-8 rounded-[24px] bg-[#111111] border border-[#27272A] overflow-hidden relative"
+              className="flex flex-col p-8 rounded-[24px] bg-muted border border-border overflow-hidden relative"
               style={{ boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06)" }}
             >
               <h3 className="text-2xl font-heading font-semibold text-foreground mb-2">
@@ -91,7 +114,7 @@ export function ContactSection() {
                     target="_blank"
                     onMouseEnter={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "starstruck", message: "Code!" } }))}
                     onMouseLeave={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching" } }))}
-                    className="flex-1 flex items-center justify-center gap-2 p-4 rounded-xl border border-border bg-background/50 hover:bg-muted transition-all active:scale-[0.98] text-foreground"
+                    className="flex-1 flex items-center justify-center gap-2 p-4 rounded-xl border border-border bg-background/50 hover:bg-muted transition-all active:scale-[0.98] text-foreground cursor-pointer"
                   >
                     <GithubLogo className="w-5 h-5" />
                     <span className="text-sm font-medium">GitHub</span>
@@ -101,7 +124,7 @@ export function ContactSection() {
                     target="_blank"
                     onMouseEnter={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "heart", message: "Connect with me!" } }))}
                     onMouseLeave={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching" } }))}
-                    className="flex-1 flex items-center justify-center gap-2 p-4 rounded-xl border border-border bg-background/50 hover:bg-muted transition-all active:scale-[0.98] text-foreground"
+                    className="flex-1 flex items-center justify-center gap-2 p-4 rounded-xl border border-border bg-background/50 hover:bg-muted transition-all active:scale-[0.98] text-foreground cursor-pointer"
                   >
                     <LinkedinLogo className="w-5 h-5" />
                     <span className="text-sm font-medium">LinkedIn</span>
@@ -111,7 +134,6 @@ export function ContactSection() {
             </div>
           </motion.div>
 
-          {/* Right: Contact Form */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -120,7 +142,8 @@ export function ContactSection() {
           >
             <form 
               onSubmit={handleSubmit}
-              className="flex flex-col p-8 rounded-[24px] bg-[#111111] border border-[#27272A] overflow-hidden relative h-full"
+              noValidate
+              className="flex flex-col p-8 rounded-[24px] bg-muted border border-border overflow-hidden relative h-full"
               style={{ boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06)" }}
             >
               <h3 className="text-2xl font-heading font-semibold text-foreground mb-6">
@@ -133,12 +156,21 @@ export function ContactSection() {
                   <input 
                     type="text" 
                     id="name" 
-                    required
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     onFocus={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching", message: "Who are you?" } }))}
                     onBlur={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching" } }))}
-                    className="px-4 py-3 rounded-lg border border-border bg-[#1A1A1A] text-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-muted-foreground"
+                    className={`px-4 py-3 rounded-lg border bg-surface text-foreground focus:outline-none focus:ring-1 transition-all placeholder:text-muted-foreground ${
+                      errors.name ? 'border-destructive focus:border-destructive focus:ring-destructive/50' : 'border-border focus:border-primary/50 focus:ring-primary/50'
+                    }`}
                     placeholder="John Doe"
                   />
+                  {errors.name && (
+                    <div className="flex items-center gap-1.5 text-destructive mt-1">
+                      <WarningCircle weight="bold" className="w-4 h-4" />
+                      <span className="text-xs font-medium">{errors.name}</span>
+                    </div>
+                  )}
                 </div>
                 
                 <div className="flex flex-col gap-2">
@@ -146,25 +178,43 @@ export function ContactSection() {
                   <input 
                     type="email" 
                     id="email" 
-                    required
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     onFocus={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching", message: "Where can I reach you?" } }))}
                     onBlur={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching" } }))}
-                    className="px-4 py-3 rounded-lg border border-border bg-[#1A1A1A] text-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-muted-foreground"
+                    className={`px-4 py-3 rounded-lg border bg-surface text-foreground focus:outline-none focus:ring-1 transition-all placeholder:text-muted-foreground ${
+                      errors.email ? 'border-destructive focus:border-destructive focus:ring-destructive/50' : 'border-border focus:border-primary/50 focus:ring-primary/50'
+                    }`}
                     placeholder="john@example.com"
                   />
+                  {errors.email && (
+                    <div className="flex items-center gap-1.5 text-destructive mt-1">
+                      <WarningCircle weight="bold" className="w-4 h-4" />
+                      <span className="text-xs font-medium">{errors.email}</span>
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex flex-col gap-2 flex-1">
                   <label htmlFor="message" className="text-sm font-medium text-foreground">Message</label>
                   <textarea 
                     id="message" 
-                    required
                     rows={4}
+                    value={formData.message}
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     onFocus={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "thinking", message: "Take your time!" } }))}
                     onBlur={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching" } }))}
-                    className="px-4 py-3 rounded-lg border border-border bg-[#1A1A1A] text-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all resize-none placeholder:text-muted-foreground flex-1"
+                    className={`px-4 py-3 rounded-lg border bg-surface text-foreground focus:outline-none focus:ring-1 transition-all resize-none placeholder:text-muted-foreground flex-1 scrollbar-thin ${
+                      errors.message ? 'border-destructive focus:border-destructive focus:ring-destructive/50' : 'border-border focus:border-primary/50 focus:ring-primary/50'
+                    }`}
                     placeholder="How can I help you?"
                   />
+                  {errors.message && (
+                    <div className="flex items-center gap-1.5 text-destructive mt-1">
+                      <WarningCircle weight="bold" className="w-4 h-4" />
+                      <span className="text-xs font-medium">{errors.message}</span>
+                    </div>
+                  )}
                 </div>
 
                 <button 
@@ -172,10 +222,16 @@ export function ContactSection() {
                   disabled={status === "loading" || status === "success"}
                   onMouseEnter={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "starstruck", message: "Send it!" } }))}
                   onMouseLeave={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching" } }))}
-                  onClick={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "success", message: "Whoosh!" } }))}
-                  className="group mt-4 flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 disabled:opacity-70 disabled:pointer-events-none"
+                  onClick={() => { if (Object.keys(errors).length === 0 && formData.name) window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "success", message: "Whoosh!" } })) }}
+                  className="group mt-4 flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 disabled:opacity-70 disabled:pointer-events-none cursor-pointer"
                 >
                   {status === "idle" && (
+                    <>
+                      Send Message
+                      <PaperPlaneRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" weight="bold" />
+                    </>
+                  )}
+                  {status === "error" && (
                     <>
                       Send Message
                       <PaperPlaneRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" weight="bold" />

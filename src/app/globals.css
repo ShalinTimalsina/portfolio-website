@@ -10,6 +10,8 @@
   --color-muted: var(--bg-secondary);
   --color-muted-foreground: var(--fg-secondary);
   
+  --color-surface: var(--bg-tertiary);
+  
   --color-border: var(--border-default);
   --color-border-hover: var(--border-hover);
   
@@ -27,9 +29,9 @@
 @layer base {
   :root {
     /* Light Mode Tokens (Deliberately designed, not an afterthought) */
-    --bg-primary: #FAFAFA;
-    --bg-secondary: #F4F4F5;
-    --bg-tertiary: #E4E4E7;
+    --bg-primary: #FAFAFA;       /* Main page background */
+    --bg-secondary: #FFFFFF;     /* Elevated cards (bg-muted) */
+    --bg-tertiary: #FFFFFF;      /* Innermost elements like inputs (bg-surface) */
     
     --fg-primary: #09090B;
     --fg-secondary: #52525B;
@@ -66,6 +68,10 @@
   * {
     border-color: var(--border-default);
   }
+
+  html {
+    scroll-behavior: smooth;
+  }
   
   body {
     background-color: var(--bg-primary);
@@ -99,4 +105,39 @@
     transition-duration: 0s !important;
     transition-delay: 0s !important;
   }
+}
+
+/* Override WebKit Autofill Yellow Background */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+  transition: background-color 5000s ease-in-out 0s;
+  -webkit-text-fill-color: var(--fg-primary) !important;
+}
+
+/* Custom Scrollbars */
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-hover) transparent;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-hover);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--fg-tertiary);
 }
