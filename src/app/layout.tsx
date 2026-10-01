@@ -7,6 +7,7 @@ import { CommandPalette } from "@/components/shared/command-palette";
 import { ScrollProgress } from "@/components/shared/scroll-progress";
 import { Toaster } from "sonner";
 import { MascotCompanion } from "@/components/mascot/mascot-companion";
+import { Analytics } from "@vercel/analytics/next";
 
 // Primary heading font
 const fontHeading = Outfit({
@@ -78,6 +79,7 @@ export default function RootLayout({
               className: "bg-surface border-border text-foreground",
             }}
           />
+          <Analytics />
         </ThemeProvider>
       </body>
     </html>
