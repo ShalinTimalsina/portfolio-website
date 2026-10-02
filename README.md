@@ -1,6 +1,6 @@
-# Shalin Timalsina — Portfolio
+# Shalin Timalsina -- Portfolio
 
-A premium portfolio, living résumé, and interactive playground for a Cloud & DevOps engineer. Designed to feel like infrastructure itself: precise, reliable, and beautifully engineered.
+A premium portfolio, living resume, and interactive playground for a Cloud & DevOps engineer. Designed to feel like infrastructure itself: precise, reliable, and beautifully engineered.
 
 ## Tech Stack
 - **Framework:** Next.js 15 (App Router)
