@@ -30,9 +30,17 @@
 
 ### Phase 3: Build Public Pages & Components (COMPLETED)
 1. **Database:** Neon DB PostgreSQL connection string set up in `.env.local` and `drizzle.config.ts` configured to load it via `dotenv`.
-2. **Components:** Built the Bento grids for Work (`work.tsx`) and Skills (`skills.tsx`) matching `CONTENT.md` specifications.
+2. **Components:** Built the Bento grids for Work (`work.tsx`) and Skills (`skills.tsx`) matching `CONTENT.md` specifications. Built the About section (`about.tsx`) with the timeline.
 3. **Cmd+K Search:** Implemented the global command palette using `cmdk` in `command-palette.tsx` and mounted it at `layout.tsx`.
 4. **Contact:** Built the contact bento cards and form in `contact.tsx` with a mock loading state simulation.
+
+---
+
+### Phase 3.5: SEO & Final UI Polish (COMPLETED)
+1. **SEO Framework:** Integrated `claude-seo` agentic framework into `.agents/skills`.
+2. **Technical SEO:** Fixed Semantic HTML in Hero (H1->H2), injected dynamic JSON-LD Person schema (using `next/script` to avoid `dangerouslySetInnerHTML`), added `metadataBase`, OpenGraph tags, and Twitter Cards to `layout.tsx`.
+3. **Agentic Crawlers:** Configured `robots.ts` to allow AI search bots (Perplexity, ChatGPT Search) for citability, while blocking raw model-training scrapers. Fixed sitemap URL domain to `shalintimalsina.com.np`.
+4. **Terminal Polish:** Refactored Terminal fullscreen mode to use `createPortal` (bypassing layout constraints). Improved argument autocomplete (`sudo`, `theme`) and fixed mascot error handling for invalid commands.
 
 ---
 
