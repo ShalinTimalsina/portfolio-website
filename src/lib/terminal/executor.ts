@@ -92,6 +92,28 @@ export class Executor {
       }
     } else {
       bufferedIO.writeError(`bash: ${cmdName}: command not found`)
+      
+      // Fuzzy suggest: find commands with small edit distance or substring match
+      const allCmds = await import("./registry").then(m => m.getAllCommands())
+      const allNames: string[] = []
+      for (const cmd of allCmds) {
+        allNames.push(cmd.name)
+        if (cmd.aliases) allNames.push(...cmd.aliases)
+      }
+      
+      const suggestions = allNames.filter(name => {
+        // Substring match
+        if (name.includes(cmdName) || cmdName.includes(name)) return true
+        // Levenshtein distance <= 2
+        if (levenshtein(cmdName, name) <= 2) return true
+        return false
+      }).slice(0, 3)
+      
+      if (suggestions.length > 0) {
+        bufferedIO.writeError(`\nDid you mean: ${suggestions.join(", ")}?`)
+      }
+      bufferedIO.writeError(`\nType 'help' to see all available commands.`)
+      this.io.dispatchMascot({ state: "confused", message: "That's not a command..." })
       exitCode = 127
     }
 
@@ -148,4 +170,20 @@ export class Executor {
 
     return exitCode
   }
+}
+
+/** Minimal Levenshtein edit-distance for fuzzy command matching */
+function levenshtein(a: string, b: string): number {
+  const m = a.length, n = b.length
+  const dp: number[][] = Array.from({ length: m + 1 }, (_, i) =>
+    Array.from({ length: n + 1 }, (_, j) => (i === 0 ? j : j === 0 ? i : 0))
+  )
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      dp[i][j] = a[i - 1] === b[j - 1]
+        ? dp[i - 1][j - 1]
+        : 1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1])
+    }
+  }
+  return dp[m][n]
 }

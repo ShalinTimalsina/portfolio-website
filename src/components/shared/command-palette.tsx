@@ -47,31 +47,31 @@ export function CommandPalette() {
   }
 
   const navItems = [
-    { label: "Home", value: "home start index", icon: User, action: () => window.scrollTo({ top: 0, behavior: "smooth" }) },
-    { label: "Work", value: "work projects portfolio case studies", icon: Code, action: () => document.getElementById("work")?.scrollIntoView({ behavior: "smooth", block: "start" }) },
-    { label: "Skills", value: "skills stack technologies tools aws linux", icon: Terminal, action: () => document.getElementById("skills")?.scrollIntoView({ behavior: "smooth", block: "start" }) },
-    { label: "About", value: "about bio timeline certifications education", icon: User, action: () => document.getElementById("about")?.scrollIntoView({ behavior: "smooth", block: "start" }) },
-    { label: "Contact", value: "contact message email hire", icon: EnvelopeSimple, action: () => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth", block: "center" }) },
+    { label: "Home", value: "Home hero top start index landing page", icon: User, action: () => window.scrollTo({ top: 0, behavior: "smooth" }) },
+    { label: "Work", value: "Work projects portfolio case studies selected", icon: Code, action: () => document.getElementById("work")?.scrollIntoView({ behavior: "smooth", block: "start" }) },
+    { label: "Skills", value: "Skills stack technologies tools aws linux docker kubernetes terraform devops cloud", icon: Terminal, action: () => document.getElementById("skills")?.scrollIntoView({ behavior: "smooth", block: "start" }) },
+    { label: "About", value: "About bio timeline certifications education shalin who", icon: User, action: () => document.getElementById("about")?.scrollIntoView({ behavior: "smooth", block: "start" }) },
+    { label: "Contact", value: "Contact message email hire reach out get in touch", icon: EnvelopeSimple, action: () => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth", block: "center" }) },
   ]
 
   const projectItems = [
-    { label: "Terraform CI/CD Pipeline", value: "terraform ci cd pipeline aws github actions bash", icon: Code, action: () => window.open("https://github.com/ShalinTimalsina/Terraform_CI-CD", "_blank") },
-    { label: "NRB Redesign", value: "nrb redesign nepal rastra bank nextjs react typescript tailwind", icon: Code, action: () => window.open("https://nrb-redesign.vercel.app", "_blank") },
-    { label: "Vote App", value: "vote app voting docker kubernetes redis typescript microservices", icon: Code, action: () => window.open("https://github.com/ShalinTimalsina/Vote-app", "_blank") },
-    { label: "Cloudway LMS", value: "cloudway lms learning management system nodejs mongodb javascript", icon: Code, action: () => window.open("https://github.com/ShalinTimalsina/Cloudway_LMS", "_blank") },
+    { label: "Terraform CI/CD Pipeline", value: "Terraform CI/CD Pipeline aws github actions bash infrastructure devops", icon: Code, action: () => window.open("https://github.com/ShalinTimalsina/Terraform_CI-CD", "_blank") },
+    { label: "NRB Redesign", value: "NRB Redesign nepal rastra bank nextjs react typescript tailwind frontend", icon: Code, action: () => window.open("https://nrb-redesign.vercel.app", "_blank") },
+    { label: "Vote App", value: "Vote App voting docker kubernetes redis typescript microservices containers", icon: Code, action: () => window.open("https://github.com/ShalinTimalsina/Vote-app", "_blank") },
+    { label: "Cloudway LMS", value: "Cloudway LMS learning management system nodejs mongodb javascript fullstack", icon: Code, action: () => window.open("https://github.com/ShalinTimalsina/Cloudway_LMS", "_blank") },
   ]
 
   const linkItems = [
-    { label: "GitHub", value: "github source code git", icon: Code, action: () => window.open("https://github.com/ShalinTimalsina", "_blank") },
-    { label: "LinkedIn", value: "linkedin profile connect", icon: User, action: () => window.open("https://linkedin.com/in/shalin-timalsina", "_blank") },
-    { label: "Twitter / X", value: "twitter x social", icon: User, action: () => window.open("https://twitter.com/shalintimalsina", "_blank") },
-    { label: "Email Me", value: "email contact mailto", icon: EnvelopeSimple, action: () => window.open("mailto:salintimalsina01@gmail.com", "_blank") },
+    { label: "GitHub", value: "GitHub source code git repository repos profile", icon: Code, action: () => window.open("https://github.com/ShalinTimalsina", "_blank") },
+    { label: "LinkedIn", value: "LinkedIn profile connect network social professional", icon: User, action: () => window.open("https://linkedin.com/in/shalin-timalsina", "_blank") },
+    { label: "Twitter / X", value: "Twitter X social media tweet posts", icon: User, action: () => window.open("https://twitter.com/shalintimalsina", "_blank") },
+    { label: "Email Me", value: "Email Me contact mailto send message gmail", icon: EnvelopeSimple, action: () => window.open("mailto:salintimalsina01@gmail.com", "_blank") },
   ]
 
   const systemItems = [
     { 
       label: `Switch to ${theme === "dark" ? "Light" : "Dark"} Mode`, 
-      value: "theme dark light mode switch", 
+      value: `Switch to ${theme === "dark" ? "Light" : "Dark"} Mode theme dark light mode toggle appearance`, 
       icon: theme === "dark" ? Sun : Moon, 
       action: () => {
         const newTheme = theme === "dark" ? "light" : "dark";
@@ -83,7 +83,7 @@ export function CommandPalette() {
     },
     {
       label: "Open Terminal",
-      value: "open terminal command line bash shell",
+      value: "Open Terminal command line bash shell cli console ShalinOS",
       icon: Terminal,
       action: () => {
         window.dispatchEvent(new CustomEvent("term-open"))

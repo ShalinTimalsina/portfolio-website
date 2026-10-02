@@ -20,14 +20,19 @@ export function HeroSection() {
     const handleOpen = () => {
       setIsTerminalOpen(true)
       window.scrollTo({ top: 0, behavior: "smooth" })
+      // Always dispatch focus event — handles "already open" case too
+      setTimeout(() => window.dispatchEvent(new CustomEvent("term-focus")), 200)
     }
+    const handleFullscreen = () => setIsTerminalExpanded(prev => !prev)
     
     window.addEventListener("term-exit", handleExit)
     window.addEventListener("term-open", handleOpen)
+    window.addEventListener("term-fullscreen", handleFullscreen)
     
     return () => {
       window.removeEventListener("term-exit", handleExit)
       window.removeEventListener("term-open", handleOpen)
+      window.removeEventListener("term-fullscreen", handleFullscreen)
     }
   }, [])
 

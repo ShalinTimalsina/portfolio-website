@@ -20,3 +20,15 @@ export function getCommand(name: string): CommandDefinition | undefined {
 export function getAllCommands(): CommandDefinition[] {
   return Array.from(registry.values())
 }
+
+export function getAllAliases(): Map<string, string> {
+  return aliases
+}
+
+export function registerAlias(alias: string, target: string): boolean {
+  // Target must resolve to a real command
+  const resolved = aliases.get(target) || target
+  if (!registry.has(resolved)) return false
+  aliases.set(alias, resolved)
+  return true
+}

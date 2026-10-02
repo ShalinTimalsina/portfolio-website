@@ -115,6 +115,23 @@ export function TerminalPanel({ onClose, isExpanded = false, onExpand }: Termina
     }
   }, [isMinimized])
 
+  // Listen for external focus requests (e.g. from Ctrl+K "Open Terminal" when already open)
+  useEffect(() => {
+    const handleFocus = () => {
+      if (inputRef.current) {
+        inputRef.current.focus()
+        const t1 = setTimeout(() => inputRef.current?.focus(), 100)
+        const t2 = setTimeout(() => inputRef.current?.focus(), 400)
+        return () => {
+          clearTimeout(t1)
+          clearTimeout(t2)
+        }
+      }
+    }
+    window.addEventListener("term-focus", handleFocus)
+    return () => window.removeEventListener("term-focus", handleFocus)
+  }, [])
+
   const appendHistory = (type: TerminalOutput["type"], content: React.ReactNode) => {
     setHistory(prev => [...prev, { id: `res-${Date.now()}-${Math.random()}`, type, content }])
   }

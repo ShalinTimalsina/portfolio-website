@@ -1,4 +1,5 @@
 import { CommandDefinition } from "../types"
+import { getAllAliases, registerAlias } from "../registry"
 
 export const helpCmd: CommandDefinition = {
   name: "help",
@@ -41,6 +42,8 @@ export const helpCmd: CommandDefinition = {
         [{ type: "text", content: "  shutdown" }, { type: "text", content: "---------" }, { type: "text", content: "Halt, power-off or reboot the machine" }],
         [{ type: "text", content: "  exit" }, { type: "text", content: "---------" }, { type: "text", content: "Cause normal process termination" }],
         [{ type: "text", content: "  theme <dark|light>" }, { type: "text", content: "-" }, { type: "text", content: "Switch UI theme" }],
+        [{ type: "text", content: "  fullscreen" }, { type: "text", content: "---------" }, { type: "text", content: "Toggle fullscreen terminal" }],
+        [{ type: "text", content: "  alias [n=cmd]" }, { type: "text", content: "---" }, { type: "text", content: "List or set command aliases" }],
         [{ type: "text", content: "" }, { type: "text", content: "" }, { type: "text", content: "" }],
         [{ type: "bold", color: "text-yellow-400", content: "Filters & Networking" }, { type: "text", content: "" }, { type: "text", content: "" }],
         [{ type: "text", content: "  grep" }, { type: "text", content: "---------" }, { type: "text", content: "Search pattern in text" }],
@@ -352,6 +355,74 @@ export const themeCmd: CommandDefinition = {
 
     io.write(`Switched to ${requestedTheme} mode.`)
     io.dispatchMascot({ state: "success", message: requestedTheme === "dark" ? "Going dark!" : "Let there be light!" })
+    return 0
+  }
+}
+
+export const fullscreenCmd: CommandDefinition = {
+  name: "fullscreen",
+  aliases: ["fs", "maximize"],
+  description: "Toggle fullscreen terminal",
+  usage: "fullscreen",
+  run: (ctx, args, io) => {
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("term-fullscreen"))
+    }
+    io.dispatchMascot({ state: "starstruck", message: "Maximum power!" })
+    return 0
+  }
+}
+
+export const aliasCmd: CommandDefinition = {
+  name: "alias",
+  description: "List or set command aliases",
+  usage: "alias [name=command]",
+  run: (ctx, args, io) => {
+    // No args: list all aliases
+    if (args.length < 2) {
+      const allAliases = getAllAliases()
+      if (allAliases.size === 0) {
+        io.write("No aliases defined.")
+        return 0
+      }
+
+      io.write("Registered aliases:")
+      io.write({
+        type: "table",
+        content: Array.from(allAliases.entries()).map(([alias, target]) => [
+          { type: "color", color: "text-primary font-bold", content: `  ${alias}` },
+          { type: "text", content: "→" },
+          { type: "text", content: target },
+        ])
+      } as any)
+      return 0
+    }
+
+    // Set alias: alias ll=ls
+    const assignment = args.slice(1).join(" ")
+    const eqIndex = assignment.indexOf("=")
+    if (eqIndex === -1) {
+      io.writeError("Usage: alias name=command")
+      io.writeError("Example: alias ll=ls")
+      return 1
+    }
+
+    const aliasName = assignment.substring(0, eqIndex).trim()
+    const targetCmd = assignment.substring(eqIndex + 1).trim().replace(/^["']|["']$/g, "")
+
+    if (!aliasName || !targetCmd) {
+      io.writeError("Usage: alias name=command")
+      return 1
+    }
+
+    const success = registerAlias(aliasName, targetCmd)
+    if (!success) {
+      io.writeError(`Unknown command: ${targetCmd}`)
+      return 1
+    }
+
+    io.write(`alias ${aliasName}='${targetCmd}'`)
+    io.dispatchMascot({ state: "success", message: "Shortcut saved!" })
     return 0
   }
 }
