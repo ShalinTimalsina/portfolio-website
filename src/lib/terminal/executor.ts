@@ -113,7 +113,7 @@ export class Executor {
         bufferedIO.writeError(`\nDid you mean: ${suggestions.join(", ")}?`)
       }
       bufferedIO.writeError(`\nType 'help' to see all available commands.`)
-      this.io.dispatchMascot({ state: "confused", message: "That's not a command..." })
+      this.io.dispatchMascot({ state: "error", message: "That's not a command..." })
       exitCode = 127
     }
 

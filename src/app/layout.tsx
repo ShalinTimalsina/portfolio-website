@@ -8,6 +8,7 @@ import { ScrollProgress } from "@/components/shared/scroll-progress";
 import { Toaster } from "sonner";
 import { MascotCompanion } from "@/components/mascot/mascot-companion";
 import { Analytics } from "@vercel/analytics/next";
+import Script from "next/script";
 
 // Primary heading font
 const fontHeading = Outfit({
@@ -31,13 +32,27 @@ const fontMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://shalintimalsina.com.np'),
   title: {
     template: "%s | Shalin Timalsina",
-    default: "Shalin Timalsina",
+    default: "Shalin Timalsina | Cloud & DevOps Engineer",
   },
   description: "AWS Certified Solutions Architect building cloud-native infrastructure, automated CI/CD pipelines, and secure, scalable applications.",
   icons: {
     icon: '/icon.png',
+  },
+  openGraph: {
+    title: "Shalin Timalsina | Cloud & DevOps Engineer",
+    description: "AWS Certified Solutions Architect building cloud-native infrastructure, automated CI/CD pipelines, and secure, scalable applications.",
+    url: 'https://shalintimalsina.com.np',
+    siteName: 'Shalin Timalsina',
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "Shalin Timalsina | Cloud & DevOps Engineer",
+    description: "AWS Certified Solutions Architect building cloud-native infrastructure, automated CI/CD pipelines, and secure, scalable applications.",
   },
 };
 
@@ -57,6 +72,18 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: "Shalin Timalsina",
+    jobTitle: "Cloud & DevOps Engineer",
+    url: "https://shalintimalsina.com.np",
+    sameAs: [
+      "https://github.com/ShalinTimalsina",
+      "https://linkedin.com/in/shalin-timalsina"
+    ]
+  };
+
   return (
     <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
       <head>
@@ -66,6 +93,9 @@ export default function RootLayout({
       <body
         className={`${fontHeading.variable} ${fontBody.variable} ${fontMono.variable} antialiased selection:bg-primary/20 selection:text-primary min-h-screen bg-background text-foreground transition-colors duration-300`}
       >
+        <Script id="person-schema" type="application/ld+json">
+          {JSON.stringify(jsonLd)}
+        </Script>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

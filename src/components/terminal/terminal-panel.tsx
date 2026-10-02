@@ -83,6 +83,7 @@ export function TerminalPanel({ onClose, isExpanded = false, onExpand }: Termina
   const [isRebooting, setIsRebooting] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
+  const typingPhraseRef = useRef("Hacking the mainframe...")
 
   const scrollToBottom = () => {
     if (scrollRef.current) {
@@ -100,13 +101,13 @@ export function TerminalPanel({ onClose, isExpanded = false, onExpand }: Termina
   // Auto-focus input when terminal mounts or is maximized
   useEffect(() => {
     if (!isMinimized && inputRef.current) {
-      inputRef.current.focus()
+      inputRef.current.focus({ preventScroll: true })
       
       // Small timeout for framer-motion layout animations
-      const t1 = setTimeout(() => inputRef.current?.focus(), 100)
+      const t1 = setTimeout(() => inputRef.current?.focus({ preventScroll: true }), 100)
       
       // Larger fallback timeout to defeat Radix UI Dialog restoreFocus taking it back during unmount
-      const t2 = setTimeout(() => inputRef.current?.focus(), 400)
+      const t2 = setTimeout(() => inputRef.current?.focus({ preventScroll: true }), 400)
       
       return () => {
         clearTimeout(t1)
@@ -119,9 +120,9 @@ export function TerminalPanel({ onClose, isExpanded = false, onExpand }: Termina
   useEffect(() => {
     const handleFocus = () => {
       if (inputRef.current) {
-        inputRef.current.focus()
-        const t1 = setTimeout(() => inputRef.current?.focus(), 100)
-        const t2 = setTimeout(() => inputRef.current?.focus(), 400)
+        inputRef.current.focus({ preventScroll: true })
+        const t1 = setTimeout(() => inputRef.current?.focus({ preventScroll: true }), 100)
+        const t2 = setTimeout(() => inputRef.current?.focus({ preventScroll: true }), 400)
         return () => {
           clearTimeout(t1)
           clearTimeout(t2)
@@ -315,6 +316,11 @@ export function TerminalPanel({ onClose, isExpanded = false, onExpand }: Termina
       if (args.length === 1) {
         const matches = commands.filter(c => c.startsWith(lastArg))
         if (matches.length > 0) setInput(matches[0] + " ")
+      } else if (args.length === 2 && (args[0].toLowerCase() === "sudo" || args[0].toLowerCase() === "theme")) {
+        const cmd = args[0].toLowerCase()
+        const subs = cmd === "sudo" ? ["hire-shalin", "su"] : ["dark", "light"]
+        const matches = subs.filter(s => s.startsWith(lastArg))
+        if (matches.length > 0) setInput(`${args[0]} ${matches[0]} `)
       } else {
         try {
           const lastSlashIdx = lastArg.lastIndexOf('/')
@@ -346,7 +352,11 @@ export function TerminalPanel({ onClose, isExpanded = false, onExpand }: Termina
         } catch(e) {}
       }
     } else {
-      window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "typing" } }))
+      if (input.length === 0) {
+        const phrases = ["Hacking the mainframe...", "Writing code...", "I am speed.", "Tap tap tap...", "Compiling thoughts...", "Injecting payload..."]
+        typingPhraseRef.current = phrases[Math.floor(Math.random() * phrases.length)]
+      }
+      window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "typing", message: typingPhraseRef.current } }))
     }
   }
 
@@ -400,14 +410,6 @@ export function TerminalPanel({ onClose, isExpanded = false, onExpand }: Termina
           </span>
         </div>
         
-        <div className="flex items-center gap-3 text-muted-foreground">
-          <button aria-label="Toggle Fullscreen" onClick={() => { setIsMinimized(false); if (onExpand) onExpand(); }} className="hover:text-foreground transition-colors cursor-pointer">
-            {isExpanded ? <CornersIn /> : <CornersOut />}
-          </button>
-          <button aria-label="Close Terminal Header" onClick={() => { if (onClose) onClose(); }} className="hover:text-foreground transition-colors cursor-pointer">
-            <X />
-          </button>
-        </div>
       </motion.div>
 
       <AnimatePresence initial={false}>
@@ -422,7 +424,7 @@ export function TerminalPanel({ onClose, isExpanded = false, onExpand }: Termina
             <div 
               ref={scrollRef}
               className="flex-1 p-4 overflow-y-auto scrollbar-thin flex flex-col gap-2 cursor-text"
-              onClick={() => inputRef.current?.focus()}
+              onClick={() => inputRef.current?.focus({ preventScroll: true })}
             >
         {history.map((item) => (
           <div 
@@ -440,29 +442,81 @@ export function TerminalPanel({ onClose, isExpanded = false, onExpand }: Termina
         ))}
         
         {!isRebooting && (
-          <div className="flex items-center group">
-            <span className="text-primary font-semibold mr-2 shrink-0">shalin@cloud:{formatCwd(cwd)}$</span>
-            <input
-              ref={inputRef}
-              type="text"
-              aria-label="Terminal command input"
-              value={input}
-              onChange={(e) => {
-                const val = e.target.value
-                  .replace(/—/g, "--")
-                  .replace(/–/g, "--")
-                  .replace(/[“”]/g, '"')
-                  .replace(/[‘’]/g, "'")
-                setInput(val)
-              }}
-              onKeyDown={handleKeyDown}
-              className="flex-1 bg-transparent border-none outline-none text-foreground caret-primary w-full"
-              autoComplete="off"
-              spellCheck="false"
-              autoCorrect="off"
-              autoCapitalize="off"
-              autoFocus
-            />
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center group relative font-mono">
+              <span className="text-primary font-semibold mr-2 shrink-0">shalin@cloud:{formatCwd(cwd)}$</span>
+              <div className="relative flex-1">
+                {/* Ghost text for autocomplete (fish-shell style) */}
+                {input && (
+                  <div className="absolute inset-0 pointer-events-none text-muted-foreground/30 whitespace-pre flex items-center">
+                    <span className="opacity-0">{input}</span>
+                    {(() => {
+                      const commands = getAllCommands().map(c => c.name)
+                      const args = input.split(" ")
+                      const lastArg = args[args.length - 1].toLowerCase()
+                      
+                      if (args.length === 1 && lastArg) {
+                        const match = commands.find(c => c.startsWith(lastArg))
+                        if (match) {
+                          const remainder = match.substring(lastArg.length)
+                          return (
+                            <div className="flex items-center">
+                              <span>{remainder}</span>
+                              <span className="ml-3 text-[9px] uppercase tracking-wider opacity-60 border border-muted-foreground/30 rounded px-1.5 py-0.5 leading-none mt-0.5">Tab</span>
+                            </div>
+                          )
+                        }
+                      } else if (args.length === 2 && lastArg) {
+                        const cmd = args[0].toLowerCase()
+                        let match = ""
+                        if (cmd === "sudo") {
+                          const subs = ["hire-shalin", "su"]
+                          match = subs.find(s => s.startsWith(lastArg)) || ""
+                        } else if (cmd === "theme") {
+                          const subs = ["dark", "light"]
+                          match = subs.find(s => s.startsWith(lastArg)) || ""
+                        }
+                        if (match) {
+                          const remainder = match.substring(lastArg.length)
+                          return (
+                            <div className="flex items-center">
+                              <span>{remainder}</span>
+                              <span className="ml-3 text-[9px] uppercase tracking-wider opacity-60 border border-muted-foreground/30 rounded px-1.5 py-0.5 leading-none mt-0.5">Tab</span>
+                            </div>
+                          )
+                        }
+                      }
+                      return null
+                    })()}
+                  </div>
+                )}
+                <input
+                  ref={inputRef}
+                  type="text"
+                  aria-label="Terminal command input"
+                  value={input}
+                  onChange={(e) => {
+                    const val = e.target.value
+                      .replace(/—/g, "--")
+                      .replace(/–/g, "--")
+                      .replace(/[“”]/g, '"')
+                      .replace(/[‘’]/g, "'")
+                    setInput(val)
+                  }}
+                  onKeyDown={handleKeyDown}
+                  className="w-full bg-transparent border-none outline-none text-foreground caret-primary absolute inset-0 z-10 placeholder:text-muted-foreground/30"
+                  autoComplete="off"
+                  spellCheck="false"
+                  autoCorrect="off"
+                  autoCapitalize="off"
+                  autoFocus
+                />
+                {/* Invisible element to maintain height for absolute input */}
+                <div className="invisible whitespace-pre" aria-hidden="true">
+                  {input || " "}
+                </div>
+              </div>
+            </div>
           </div>
         )}
             </div>

@@ -4,7 +4,7 @@
 
 ## Goal
 
-Build **shalin-timalsina.me** — a premium portfolio for a Cloud & DevOps engineer in the making that doubles as a living résumé, blog, and interactive playground. The site must feel like infrastructure itself: precise, quiet, reliable, beautifully engineered.
+Build **shalintimalsina.com.np** — a premium portfolio for a Cloud & DevOps engineer in the making that doubles as a living résumé, blog, and interactive playground. The site must feel like infrastructure itself: precise, quiet, reliable, beautifully engineered.
 
 ## Feature List
 

@@ -82,9 +82,9 @@ export function HeroSection() {
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-heading font-semibold tracking-tight text-foreground">
               Shalin Timalsina.
             </h1>
-            <p className={cn("text-xl sm:text-2xl text-muted-foreground leading-relaxed text-balance", !isTerminalOpen && "mx-auto")}>
+            <h2 className={cn("text-xl sm:text-2xl text-muted-foreground leading-relaxed text-balance font-normal", !isTerminalOpen && "mx-auto")}>
               Cloud & DevOps Engineer in the making building resilient infrastructure and the interfaces to understand it.
-            </p>
+            </h2>
           </motion.div>
 
           <motion.div layout className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-4">

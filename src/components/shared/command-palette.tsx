@@ -47,7 +47,10 @@ export function CommandPalette() {
   }
 
   const navItems = [
-    { label: "Home", value: "Home hero top start index landing page", icon: User, action: () => window.scrollTo({ top: 0, behavior: "smooth" }) },
+    { label: "Home", value: "Home hero top start index landing page", icon: User, action: () => {
+      window.scrollTo({ top: 0, behavior: "smooth" })
+      setTimeout(() => window.dispatchEvent(new CustomEvent("term-focus")), 300)
+    }},
     { label: "Work", value: "Work projects portfolio case studies selected", icon: Code, action: () => document.getElementById("work")?.scrollIntoView({ behavior: "smooth", block: "start" }) },
     { label: "Skills", value: "Skills stack technologies tools aws linux docker kubernetes terraform devops cloud", icon: Terminal, action: () => document.getElementById("skills")?.scrollIntoView({ behavior: "smooth", block: "start" }) },
     { label: "About", value: "About bio timeline certifications education shalin who", icon: User, action: () => document.getElementById("about")?.scrollIntoView({ behavior: "smooth", block: "start" }) },

@@ -34,6 +34,7 @@ export const helpCmd: CommandDefinition = {
         [{ type: "text", content: "  neofetch" }, { type: "text", content: "---------" }, { type: "text", content: "System information tool" }],
         [{ type: "text", content: "  top" }, { type: "text", content: "---------" }, { type: "text", content: "Task manager and system monitor" }],
         [{ type: "text", content: "  sudo" }, { type: "text", content: "---------" }, { type: "text", content: "Execute a command as another user" }],
+        [{ type: "text", content: "  sudo hire-shalin" }, { type: "text", content: "-" }, { type: "text", content: "Easter egg: Grant access to hire me" }],
         [{ type: "text", content: "  whoami" }, { type: "text", content: "---------" }, { type: "text", content: "Print effective user id" }],
         [{ type: "text", content: "  uname" }, { type: "text", content: "---------" }, { type: "text", content: "Print system information" }],
         [{ type: "text", content: "  date" }, { type: "text", content: "---------" }, { type: "text", content: "Print or set the system date and time" }],
@@ -46,6 +47,7 @@ export const helpCmd: CommandDefinition = {
         [{ type: "text", content: "  alias [n=cmd]" }, { type: "text", content: "---" }, { type: "text", content: "List or set command aliases" }],
         [{ type: "text", content: "" }, { type: "text", content: "" }, { type: "text", content: "" }],
         [{ type: "bold", color: "text-yellow-400", content: "Filters & Networking" }, { type: "text", content: "" }, { type: "text", content: "" }],
+        [{ type: "text", content: "  ifconfig" }, { type: "text", content: "---------" }, { type: "text", content: "Configure a network interface" }],
         [{ type: "text", content: "  grep" }, { type: "text", content: "---------" }, { type: "text", content: "Search pattern in text" }],
         [{ type: "text", content: "  wc" }, { type: "text", content: "---------" }, { type: "text", content: "Word, line, character, and byte count" }],
         [{ type: "text", content: "  head" }, { type: "text", content: "---------" }, { type: "text", content: "Output the first part of files" }],
@@ -159,6 +161,33 @@ export const pingCmd: CommandDefinition = {
   run: (ctx, args, io) => {
     const target = args[1] || "8.8.8.8"
     io.write(`PING ${target} 56(84) bytes of data.\n64 bytes from ${target}: icmp_seq=1 ttl=116 time=14.2 ms\n64 bytes from ${target}: icmp_seq=2 ttl=116 time=12.1 ms\n... ping stopped by browser.`)
+    return 0
+  }
+}
+
+export const ifconfigCmd: CommandDefinition = {
+  name: "ifconfig",
+  aliases: ["ip"],
+  description: "Configure a network interface",
+  usage: "ifconfig",
+  run: (ctx, args, io) => {
+    io.write(`eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 10.0.1.14  netmask 255.255.255.0  broadcast 10.0.1.255
+        inet6 fe80::8c1:7aff:fe4f:6390  prefixlen 64  scopeid 0x20<link>
+        ether 0a:c1:7a:4f:63:90  txqueuelen 1000  (Ethernet)
+        RX packets 1459203  bytes 1294819034 (1.2 GB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 854091  bytes 230591024 (230.5 MB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10<host>
+        loop  txqueuelen 1000  (Local Loopback)
+        RX packets 45012  bytes 8409212 (8.4 MB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 45012  bytes 8409212 (8.4 MB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0`)
     return 0
   }
 }
