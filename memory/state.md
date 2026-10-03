@@ -44,7 +44,44 @@
 
 ---
 
-### Next Up: Phase 4 (Admin Panel & Integration)
+### Phase 4: Performance & Visual Polish (COMPLETED)
+
+1. **Terminal Autocomplete Fix:** Fixed bug in `terminal-panel.tsx` where pressing Tab on empty input would repeatedly insert `../`. Now defaults to showing all available commands instead.
+2. **Hero Section Animations:** Added staggered entry animations (opacity + translateY) for all hero text/buttons using Motion's `variants` system. Added ambient background glows (two blurred circles with breathing opacity animation) for atmosphere.
+3. **Skills Section — Brand Logos:**
+   - Integrated high-fidelity SVG brand logos for all tools using CSS masks (`maskImage` / `WebkitMaskImage`).
+   - AWS/Amazon logos are NOT available on SimpleIcons (Amazon forced removal). AWS skills (AWS Core, EC2 & S3, VPC & Route53) use Phosphor Duotone icons (`Cloud`, `HardDrives`, `ShareNetwork`) instead.
+   - System Design uses `TreeStructure` (Phosphor), Monitoring uses `grafana` (SimpleIcons).
+   - Added `whileHover` spring bounce effect and subtle rotation/scale on logo icons.
+4. **Skills List Refinement:**
+   - Removed redundant "AWS Core" from Daily tier (EC2/S3 and VPC/Route53 already represent AWS).
+   - Added "React" to Working tier (critical for ATS/recruiter discoverability).
+   - Reorganized Working tier in frontend-to-backend flow: `React → Next.js → TypeScript → Node.js → Python → FastAPI → SQL → Linux → Nginx`.
+   - Changed `cursor-pointer` to `cursor-default` on skill pills (they are not clickable links).
+5. **Local Asset Rendering (Performance):**
+   - Downloaded all 16 SimpleIcons SVGs to `public/icons/` via `scripts/download-icons.mjs`.
+   - Updated `skills.tsx` mask URLs from `cdn.simpleicons.org` to local `/icons/*.svg` paths — eliminates external network requests and prevents FOUC.
+6. **Skeleton Loading Overhaul:**
+   - Rewrote `skeleton.tsx`: replaced banned `ease-in-out` shimmer with `linear` 2-second shimmer sweep. Updated `SkeletonCard` to match real card architecture (`rounded-[24px]`, `bg-muted`, `p-6 md:p-8`, inset double-bezel shadow).
+   - Rewrote `loading.tsx`: skeleton now structurally mirrors actual page layout (2-column Hero with terminal placeholder, section title + 3-card grid). Added `animate-in fade-in duration-700` to prevent flash on fast connections.
+7. **Lazy Loading (Chunk Splitting):**
+   - `page.tsx` now uses `next/dynamic` for all below-the-fold sections (Work, Skills, About, Contact). Hero remains eagerly imported as above-the-fold.
+8. **Hydration Fix:** Added `suppressHydrationWarning` to `<body>` tag in `layout.tsx` to prevent Grammarly browser extension from causing React hydration mismatches.
+9. **Documentation Updates:**
+   - Added "Performance & Loading Architecture" section to `docs/ARCHITECTURE.md` (lazy loading rules, skeleton design rules, asset locality rules).
+   - Created `docs/RESUME_PROMPT.md` — a ready-to-copy prompt for context-loading the project after a long break.
+
+**Key Conventions Established This Phase:**
+- **Icon Strategy:** SimpleIcons SVGs served locally from `/public/icons/`. AWS-related icons use Phosphor Duotone as fallback. Icon map lives in `skillIcons` object in `skills.tsx`.
+- **Skeleton Rule:** `loading.tsx` must always mirror the structure of `page.tsx`. Uses `duration-700` fade-in.
+- **Lazy Loading Rule:** Only above-the-fold components (Hero) are statically imported. Everything else uses `next/dynamic`.
+- **Shimmer Animation:** Uses `linear` easing (allowed for progress indicators per MOTION.md). Never `ease-in-out`.
+
+---
+
+### Next Up: Phase 5 (Admin Panel & Integration)
 1. **Auth.js Setup:** Configure Auth.js v5 for the protected `/admin` routes.
 2. **Admin Dashboard:** Build the admin CMS layout based on `docs/ADMIN-CMS.md`.
 3. **Database Integration:** Connect the frontend components (Work/Skills) to the PostgreSQL database via Drizzle queries instead of hardcoded data.
+4. **Blog Integration:** Wire up external blog links from the admin CMS.
+5. **Contact Form Backend:** Connect the contact form to the `/api/contact` route and the messages database table.

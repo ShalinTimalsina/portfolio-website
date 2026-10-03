@@ -102,6 +102,19 @@ shalintimalsina.com/
 - **Index format:** JSON array served from `/api/search` with 5-minute cache
 - **UI:** Cmd+K dialog (Radix Dialog + cmdk or custom)
 
+## Performance & Loading Architecture
+
+To maintain a 99+ Lighthouse score and instant Time to Interactive (TTI), we enforce strict loading strategies:
+
+1. **Aggressive Chunk Splitting:** 
+   - Above-the-fold components (Hero) are eagerly imported.
+   - Below-the-fold heavy Client Components (Work, Skills, About, Contact) MUST be dynamically imported via `next/dynamic` to split JS bundles.
+2. **Delayed Skeleton Hydration:**
+   - Global `loading.tsx` must structurally mirror the actual page layout (e.g. Hero + Terminal + Skills grid) to prevent layout shifts.
+   - Skeletons use `animate-in fade-in duration-700` so they do not flash aggressively on fast connections.
+3. **Asset Locality:**
+   - Never use external CDNs for UI-critical assets (like SVG brand logos). Always download and serve them locally from `/public/*` to prevent Flash of Unstyled Content (FOUC).
+
 ## Performance Budgets
 
 | Metric | Target | Tool |

@@ -1,8 +1,14 @@
+import dynamic from "next/dynamic"
+
+// Eagerly load Hero as it is above the fold
 import { HeroSection } from "@/components/sections/hero"
-import { WorkSection } from "@/components/sections/work"
-import { SkillsSection } from "@/components/sections/skills"
-import { AboutSection } from "@/components/sections/about"
-import { ContactSection } from "@/components/sections/contact"
+
+// Lazy load below-the-fold sections to split JS chunks and improve initial TTI (Time to Interactive)
+const WorkSection = dynamic(() => import("@/components/sections/work").then(mod => mod.WorkSection))
+const SkillsSection = dynamic(() => import("@/components/sections/skills").then(mod => mod.SkillsSection))
+const AboutSection = dynamic(() => import("@/components/sections/about").then(mod => mod.AboutSection))
+const ContactSection = dynamic(() => import("@/components/sections/contact").then(mod => mod.ContactSection))
+
 import { db } from "@/db"
 import { projects } from "@/db/schema"
 import { eq, desc, isNotNull } from "drizzle-orm"

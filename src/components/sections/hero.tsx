@@ -49,8 +49,23 @@ export function HeroSection() {
   return (
     <section className="relative min-h-[90vh] flex flex-col justify-center pt-24 pb-12 overflow-hidden">
       
-      {/* Background Ambient Glow */}
-      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
+      {/* Background Ambient Glows */}
+      <motion.div 
+        animate={{
+          scale: [1, 1.1, 1],
+          opacity: [0.5, 0.8, 0.5],
+        }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute top-[10%] left-[15%] w-[400px] h-[400px] bg-primary/10 rounded-full blur-[120px] -z-10 pointer-events-none" 
+      />
+      <motion.div 
+        animate={{
+          scale: [1, 1.2, 1],
+          opacity: [0.3, 0.6, 0.3],
+        }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        className="absolute bottom-[20%] right-[10%] w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] -z-10 pointer-events-none" 
+      />
       
       <div className={cn(
         "container px-6 mx-auto max-w-7xl grid gap-12 lg:gap-8 items-center",
@@ -60,15 +75,28 @@ export function HeroSection() {
         {/* Left: Copy & CTAs */}
         <motion.div 
           layout
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: { opacity: 0 },
+            visible: {
+              opacity: 1,
+              transition: { staggerChildren: 0.15, delayChildren: 0.1 }
+            }
+          }}
           className={cn(
             "flex flex-col gap-6",
             isTerminalOpen ? "max-w-xl" : "max-w-3xl items-center"
           )}
         >
-          <motion.div layout className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border border-border bg-muted/50 w-fit">
+          <motion.div 
+            layout 
+            variants={{
+              hidden: { opacity: 0, y: 16 },
+              visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.32, 0.72, 0, 1] } }
+            }}
+            className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border border-border bg-muted/50 w-fit"
+          >
             <div className="relative flex items-center justify-center">
               <div className="absolute w-2 h-2 rounded-full bg-primary animate-ping opacity-75" />
               <div className="relative w-2 h-2 rounded-full bg-primary shadow-[0_0_10px_rgba(0,200,150,0.5)]" />
@@ -78,7 +106,14 @@ export function HeroSection() {
             </span>
           </motion.div>
 
-          <motion.div layout className="flex flex-col gap-4">
+          <motion.div 
+            layout 
+            variants={{
+              hidden: { opacity: 0, y: 16 },
+              visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.32, 0.72, 0, 1] } }
+            }}
+            className="flex flex-col gap-4"
+          >
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-heading font-semibold tracking-tight text-foreground">
               Shalin Timalsina.
             </h1>
@@ -87,7 +122,14 @@ export function HeroSection() {
             </h2>
           </motion.div>
 
-          <motion.div layout className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-4">
+          <motion.div 
+            layout 
+            variants={{
+              hidden: { opacity: 0, y: 16 },
+              visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.32, 0.72, 0, 1] } }
+            }}
+            className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-4"
+          >
             <button 
               onMouseEnter={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "heart", message: "Let's do it!" } }))}
               onMouseLeave={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching" } }))}
@@ -119,7 +161,14 @@ export function HeroSection() {
             )}
           </motion.div>
           
-          <motion.div layout className="pt-2">
+          <motion.div 
+            layout 
+            variants={{
+              hidden: { opacity: 0, y: 16 },
+              visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.32, 0.72, 0, 1] } }
+            }}
+            className="pt-2"
+          >
             <span className="text-sm text-muted-foreground flex items-center justify-center lg:justify-start gap-2">
               Press <kbd className="px-2 py-0.5 rounded-md bg-muted text-xs border font-mono">{mounted && typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform) ? "⌘" : "Ctrl"} K</kbd> anywhere to search
             </span>

@@ -3,17 +3,19 @@
 import React, { useRef, useState } from "react"
 import { motion } from "motion/react"
 
+import { Cloud, HardDrives, ShareNetwork, Cpu, ChartLineUp, TreeStructure } from "@phosphor-icons/react"
+
 const skillCategories = [
   {
     title: "Daily",
     description: "Active personal projects and core stack.",
-    skills: ["Terraform", "Docker", "AWS Core", "EC2 & S3", "VPC & Route53", "Git", "GitHub Actions"],
+    skills: ["Terraform", "Docker", "EC2 & S3", "VPC & Route53", "Git", "GitHub Actions"],
     delay: 0.1,
   },
   {
     title: "Working",
     description: "Competent, have shipped projects with.",
-    skills: ["Python", "SQL", "Linux", "FastAPI", "Node.js", "Nginx", "Next.js", "TypeScript"],
+    skills: ["React", "Next.js", "TypeScript", "Node.js", "Python", "FastAPI", "SQL", "Linux", "Nginx"],
     delay: 0.2,
   },
   {
@@ -23,6 +25,29 @@ const skillCategories = [
     delay: 0.3,
   }
 ]
+
+const skillIcons: Record<string, string | React.ReactNode> = {
+  "Terraform": "terraform",
+  "Docker": "docker",
+  "AWS Core": <Cloud weight="duotone" className="w-4 h-4 transition-transform duration-300 group-hover/skill:scale-110 group-hover/skill:-rotate-6" />,
+  "EC2 & S3": <HardDrives weight="duotone" className="w-4 h-4 transition-transform duration-300 group-hover/skill:scale-110 group-hover/skill:-rotate-6" />,
+  "VPC & Route53": <ShareNetwork weight="duotone" className="w-4 h-4 transition-transform duration-300 group-hover/skill:scale-110 group-hover/skill:-rotate-6" />,
+  "Git": "git",
+  "GitHub Actions": "githubactions",
+  "React": "react",
+  "Python": "python",
+  "SQL": "postgresql",
+  "Linux": "linux",
+  "FastAPI": "fastapi",
+  "Node.js": "nodedotjs",
+  "Nginx": "nginx",
+  "Next.js": "nextdotjs",
+  "TypeScript": "typescript",
+  "Ansible": "ansible",
+  "Kubernetes": "kubernetes",
+  "System Design": <TreeStructure weight="duotone" className="w-4 h-4 transition-transform duration-300 group-hover/skill:scale-110 group-hover/skill:-rotate-6" />,
+  "Monitoring": "grafana"
+}
 
 export function SkillsSection() {
   return (
@@ -69,7 +94,7 @@ function SkillCard({ category, index: i }: { category: typeof skillCategories[0]
       transition={{ duration: 0.5, delay: category.delay, ease: [0.32, 0.72, 0, 1] }}
       onMouseMove={handleMouseMove}
       onMouseEnter={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "thinking", message: `Ah, ${category.title} tools...` } }))}
-      className="group flex flex-col gap-6 p-6 md:p-8 rounded-[24px] bg-muted border border-border overflow-hidden relative"
+      className="group flex flex-col gap-6 p-6 md:p-8 rounded-[24px] bg-muted border border-border overflow-hidden relative hover:-translate-y-[2px] hover:border-primary/20 transition-all duration-150 ease-out"
       style={{
         boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06)"
       }}
@@ -95,13 +120,36 @@ function SkillCard({ category, index: i }: { category: typeof skillCategories[0]
       </div>
 
       <div className="flex flex-wrap gap-2 pt-4 mt-auto relative z-10 pointer-events-auto">
-        {category.skills.map(skill => (
-          <span 
-            key={skill} 
-            className="px-3 py-1.5 text-xs font-mono tracking-wide rounded-md bg-surface border border-border text-muted-foreground hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 cursor-default"
+        {category.skills.map((skill, idx) => (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.3, delay: category.delay + 0.2 + (idx * 0.05), ease: [0.32, 0.72, 0, 1] }}
+            key={skill}
+            whileHover={{ y: -3, scale: 1.05 }}
+            className="group/skill flex items-center gap-2 px-3 py-1.5 text-xs font-mono tracking-wide rounded-md bg-surface border border-border text-muted-foreground hover:text-primary hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 cursor-default shadow-sm"
           >
+            {skillIcons[skill] && typeof skillIcons[skill] === "string" && (
+              <span 
+                className="w-3.5 h-3.5 bg-current transition-transform duration-300 group-hover/skill:scale-110 group-hover/skill:-rotate-6"
+                style={{
+                  maskImage: `url(/icons/${skillIcons[skill]}.svg)`,
+                  maskSize: 'contain',
+                  maskRepeat: 'no-repeat',
+                  maskPosition: 'center',
+                  WebkitMaskImage: `url(/icons/${skillIcons[skill]}.svg)`,
+                  WebkitMaskSize: 'contain',
+                  WebkitMaskRepeat: 'no-repeat',
+                  WebkitMaskPosition: 'center'
+                }}
+              />
+            )}
+            {skillIcons[skill] && typeof skillIcons[skill] !== "string" && (
+              skillIcons[skill]
+            )}
             {skill}
-          </span>
+          </motion.div>
         ))}
       </div>
     </motion.div>

@@ -335,8 +335,8 @@ export function TerminalPanel({ onClose, isExpanded = false, onExpand }: Termina
           const dirNode = resolveNode(fs, targetDir, cwd)
           if (dirNode.children) {
             const children = Object.keys(dirNode.children)
-            // also allow completing ".." if searchPrefix allows it
-            if ("..".startsWith(searchPrefix) && targetDir !== "/") children.unshift("..")
+            // also allow completing ".." if searchPrefix allows it and user explicitly typed "."
+            if ("..".startsWith(searchPrefix) && searchPrefix.length > 0 && targetDir !== "/") children.unshift("..")
             
             const matches = children.filter(c => c.startsWith(searchPrefix))
             if (matches.length > 0) {

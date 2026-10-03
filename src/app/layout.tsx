@@ -87,10 +87,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
       <head>
-        <link rel="preload" href="/mascots/character_0_directions.png" as="image" />
-        <link rel="preload" href="/mascots/character_0_reactions.png" as="image" />
+        <link rel="preload" href="/characters/shalin/directions.png" as="image" />
+        <link rel="preload" href="/characters/shalin/reactions.png" as="image" />
       </head>
       <body
+        suppressHydrationWarning
         className={`${fontHeading.variable} ${fontBody.variable} ${fontMono.variable} antialiased selection:bg-primary/20 selection:text-primary min-h-screen bg-background text-foreground transition-colors duration-300`}
       >
         <Script id="person-schema" type="application/ld+json">
