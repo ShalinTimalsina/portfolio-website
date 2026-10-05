@@ -78,6 +78,16 @@ export const catCmd: CommandDefinition = {
         io.writeError(`cat: ${args[i]}: Is a directory`)
         return 1
       }
+      if (node.name === "resume.pdf" || node.name === "resume.txt") {
+        if (typeof window !== "undefined") {
+          window.open("/resume.pdf", "_blank")
+          io.write("Opening resume in a new tab...")
+        } else {
+          io.writeError(`cat: ${args[i]}: cannot open browser window`)
+        }
+        continue
+      }
+      
       if (node.name.endsWith(".pdf")) {
         io.writeError(`cat: ${args[i]}: cannot display binary file in stdout`)
         continue
