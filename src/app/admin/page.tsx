@@ -34,7 +34,7 @@ export default async function AdminDashboard() {
   const recentProjects = await db.select().from(projects).orderBy(desc(projects.createdAt)).limit(3)
 
   return (
-    <div className="space-y-8 p-8 max-w-7xl mx-auto pb-24">
+    <div className="space-y-8 p-4 md:p-8 max-w-7xl mx-auto pb-24">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-heading font-semibold text-foreground">Dashboard</h1>
         <div className="flex items-center gap-2 text-sm text-emerald-500 bg-emerald-500/10 px-3 py-1.5 rounded-full">

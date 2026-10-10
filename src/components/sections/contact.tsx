@@ -128,7 +128,7 @@ export function ContactSection({ content = {} }: { content?: Record<string, any>
                     <span className="text-sm font-medium">GitHub</span>
                   </Link>
                   <Link 
-                    href={content["contact.linkedin"] || "https://linkedin.com/in/shalin-timalsina"} 
+                    href={content["contact.linkedin"] || "https://www.linkedin.com/in/shalin-timalsina11"} 
                     target="_blank"
                     onMouseEnter={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "heart", message: "Connect with me!" } }))}
                     onMouseLeave={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching" } }))}

@@ -85,7 +85,7 @@ export default async function RootLayout({
     url: "https://shalintimalsina.com.np",
     sameAs: [
       "https://github.com/ShalinTimalsina",
-      "https://linkedin.com/in/shalin-timalsina"
+      "https://www.linkedin.com/in/shalin-timalsina11"
     ]
   };
 

@@ -29,7 +29,7 @@ const defaultContent = [
   { key: "about.bio", value: "I build cloud infrastructure and the tooling around it. My days revolve around Terraform plans, Docker containers, and AWS services — turning architecture diagrams into running systems.\n\nI earned the AWS Solutions Architect – Associate certification to validate what I was already doing: designing secure, scalable, cost-optimized architectures. Right now I am pursuing my BSc IT at Techspire College while shipping real projects — from CI/CD pipelines with GitHub Actions to Kubernetes-orchestrated microservices.\n\nWhen I am not staring at YAML, I am probably debugging a Dockerfile or automating something that should have been automated months ago.", type: "richtext" },
   { key: "about.links", value: JSON.stringify([
     { label: "GitHub", href: "https://github.com/ShalinTimalsina", icon: "GithubLogo", mascotState: "success", mascotMessage: "Show me the code!" },
-    { label: "LinkedIn", href: "https://linkedin.com/in/shalin-timalsina", icon: "LinkedinLogo", mascotState: "heart", mascotMessage: "Let's connect!" },
+    { label: "LinkedIn", href: "https://www.linkedin.com/in/shalin-timalsina11", icon: "LinkedinLogo", mascotState: "heart", mascotMessage: "Let's connect!" },
     { label: "salintimalsina01@gmail.com", href: "mailto:salintimalsina01@gmail.com", icon: "EnvelopeSimple", mascotState: "wave", mascotMessage: "Write me an email!" }
   ], null, 2), type: "json" },
   { key: "about.stats", value: JSON.stringify([
@@ -50,8 +50,8 @@ const defaultContent = [
   { key: "contact.description", value: "I'm currently open to new opportunities...", type: "text" },
   { key: "contact.email", value: "salintimalsina01@gmail.com", type: "text" },
   { key: "contact.phone", value: "+977-9862448516", type: "text" },
-  { key: "contact.github", value: "https://github.com/shalin", type: "url" },
-  { key: "contact.linkedin", value: "https://linkedin.com/in/shalin", type: "url" },
+  { key: "contact.github", value: "https://github.com/ShalinTimalsina", type: "url" },
+  { key: "contact.linkedin", value: "https://www.linkedin.com/in/shalin-timalsina11", type: "url" },
   
   { key: "terminal.greeting", value: "Welcome to ShalinOS v3.0. Type 'help' to see available commands.", type: "text" }
 ]

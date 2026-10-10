@@ -39,7 +39,7 @@ const timeline = [
 
 const links = [
   { label: "GitHub", href: "https://github.com/ShalinTimalsina", icon: GithubLogo, mascotState: "success", mascotMessage: "Show me the code!" },
-  { label: "LinkedIn", href: "https://linkedin.com/in/shalin-timalsina", icon: LinkedinLogo, mascotState: "heart", mascotMessage: "Let's connect!" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/shalin-timalsina11", icon: LinkedinLogo, mascotState: "heart", mascotMessage: "Let's connect!" },
   { label: "salintimalsina01@gmail.com", href: "mailto:salintimalsina01@gmail.com", icon: EnvelopeSimple, mascotState: "wave", mascotMessage: "Write me an email!" },
 ]
 

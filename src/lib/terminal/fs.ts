@@ -102,7 +102,7 @@ export const initialFS: INode = {
                   name: "contact", type: "dir", readOnly: true, permissions: "drwxr-xr-x", mtime: Date.now(), linkedSection: "contact",
                   children: {
                     "send-email.sh": createNode("send-email.sh", "exec", true, "#!/bin/bash\necho 'Opening secure comms channel...'"),
-                    "socials.txt": createNode("socials.txt", "file", true, "LinkedIn: linkedin.com/in/shalin-timalsina\nGitHub: github.com/ShalinTimalsina")
+                    "socials.txt": createNode("socials.txt", "file", true, "LinkedIn: linkedin.com/in/shalin-timalsina11\nGitHub: github.com/ShalinTimalsina")
                   }
                 },
                 "about": {

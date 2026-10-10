@@ -10,7 +10,7 @@ export default async function ProjectsAdminPage() {
   const allProjects = await db.select().from(projects).orderBy(desc(projects.sortOrder), desc(projects.createdAt));
 
   return (
-    <div className="p-8 max-w-6xl mx-auto space-y-8 pb-24">
+    <div className="p-4 md:p-8 max-w-6xl mx-auto space-y-8 pb-24">
       <div>
         <Link href="/admin" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground mb-6 transition-colors cursor-pointer">
           <ArrowLeft className="w-4 h-4 mr-2" />
@@ -31,7 +31,7 @@ export default async function ProjectsAdminPage() {
       </div>
     </div>
 
-    <div className="bg-card border border-border rounded-xl overflow-hidden">
+    <div className="bg-card border border-border rounded-xl overflow-x-auto overflow-y-hidden">
         {allProjects.length === 0 ? (
           <div className="p-12 text-center text-muted-foreground flex flex-col items-center">
             <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">

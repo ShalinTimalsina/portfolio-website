@@ -66,7 +66,7 @@ export function CommandPalette() {
 
   const linkItems = [
     { label: "GitHub", value: "GitHub source code git repository repos profile", icon: Code, action: () => window.open("https://github.com/ShalinTimalsina", "_blank") },
-    { label: "LinkedIn", value: "LinkedIn profile connect network social professional", icon: User, action: () => window.open("https://linkedin.com/in/shalin-timalsina", "_blank") },
+    { label: "LinkedIn", value: "LinkedIn profile connect network social professional", icon: User, action: () => window.open("https://www.linkedin.com/in/shalin-timalsina11", "_blank") },
     { label: "Twitter / X", value: "Twitter X social media tweet posts", icon: User, action: () => window.open("https://twitter.com/shalintimalsina", "_blank") },
     { label: "Email Me", value: "Email Me contact mailto send message gmail", icon: EnvelopeSimple, action: () => window.open("mailto:salintimalsina01@gmail.com", "_blank") },
   ]
