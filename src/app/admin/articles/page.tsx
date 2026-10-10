@@ -11,7 +11,7 @@ export default async function ArticlesPage() {
   return (
     <div className="p-4 md:p-8 max-w-6xl mx-auto space-y-8 pb-24">
       <div>
-        <Link href="/admin" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground mb-6 transition-colors cursor-pointer">
+        <Link href="/admin" className="hidden md:inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground mb-6 transition-colors cursor-pointer">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Dashboard
         </Link>
@@ -22,9 +22,9 @@ export default async function ArticlesPage() {
         </div>
         <Link 
           href="/admin/articles/new" 
-          className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:opacity-90 transition-opacity cursor-pointer"
+          className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:opacity-90 transition-opacity cursor-pointer whitespace-nowrap shrink-0"
         >
-          <Plus className="w-4 h-4" weight="bold" />
+          <Plus className="w-4 h-4 shrink-0" weight="bold" />
           New Article
         </Link>
       </div>

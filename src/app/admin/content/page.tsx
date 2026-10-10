@@ -11,7 +11,7 @@ export default async function ContentPage() {
   return (
     <div className="p-4 md:p-8 max-w-6xl mx-auto space-y-8 pb-24">
       <div>
-        <Link href="/admin" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground mb-6 transition-colors cursor-pointer">
+        <Link href="/admin" className="hidden md:inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground mb-6 transition-colors cursor-pointer">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Dashboard
         </Link>

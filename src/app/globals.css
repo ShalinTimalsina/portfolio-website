@@ -10,6 +10,9 @@
   --color-muted: var(--bg-secondary);
   --color-muted-foreground: var(--fg-secondary);
   
+  --color-card: var(--bg-secondary);
+  --color-card-foreground: var(--fg-primary);
+  
   --color-surface: var(--bg-tertiary);
   
   --color-border: var(--border-default);

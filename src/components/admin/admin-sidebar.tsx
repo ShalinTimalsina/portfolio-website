@@ -21,6 +21,11 @@ export function AdminSidebar() {
   const pathname = usePathname()
   const [isOpen, setIsOpen] = React.useState(false)
   
+  // Close sidebar on mobile when navigating
+  React.useEffect(() => {
+    setIsOpen(false)
+  }, [pathname])
+
   if (pathname === "/admin/login") {
     return null
   }
@@ -37,38 +42,39 @@ export function AdminSidebar() {
     { name: "Settings", href: "/admin/settings", icon: Gear },
   ]
 
-  // Close sidebar on mobile when navigating
-  React.useEffect(() => {
-    setIsOpen(false)
-  }, [pathname])
-
   return (
     <>
       {/* Mobile Top Bar */}
-      <div className="md:hidden flex items-center justify-between p-4 border-b border-border bg-card sticky top-0 z-50 w-full">
-        <Link href="/admin" className="text-xl font-heading font-semibold text-foreground hover:opacity-80 transition-opacity">
-          Admin Panel
-        </Link>
+      <div className="md:hidden flex items-center p-4 border-b border-border bg-card sticky top-0 z-50 w-full h-[68px]">
         <button 
           onClick={() => setIsOpen(!isOpen)} 
-          className="p-2 -mr-2 text-foreground hover:bg-muted rounded-md transition-colors"
+          className="p-2 -ml-2 mr-3 text-foreground hover:bg-muted rounded-md transition-colors relative w-10 h-10 flex items-center justify-center overflow-hidden"
+          aria-label="Toggle Menu"
         >
-          {isOpen ? <X className="w-6 h-6" /> : <List className="w-6 h-6" />}
+          <div className={`absolute transition-all duration-300 ${isOpen ? "opacity-0 -rotate-90 scale-50" : "opacity-100 rotate-0 scale-100"}`}>
+            <List className="w-6 h-6" />
+          </div>
+          <div className={`absolute transition-all duration-300 ${isOpen ? "opacity-100 rotate-0 scale-100" : "opacity-0 rotate-90 scale-50"}`}>
+            <X className="w-6 h-6" />
+          </div>
         </button>
+        <Link href="/admin" className="text-xl font-heading font-semibold text-foreground hover:opacity-80 transition-opacity">
+          Admin
+        </Link>
       </div>
 
       {/* Mobile Backdrop overlay */}
       {isOpen && (
         <div 
-          className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40 md:hidden animate-in fade-in" 
+          className="fixed inset-0 bg-background/80 backdrop-blur-sm z-30 md:hidden animate-in fade-in" 
           onClick={() => setIsOpen(false)} 
         />
       )}
 
       {/* Sidebar Drawer */}
       <aside className={`
-        fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-border flex flex-col h-[100dvh]
-        transform transition-transform duration-300 ease-in-out
+        fixed inset-y-0 left-0 z-40 w-64 bg-card border-r border-border flex flex-col h-[100dvh] pt-[68px] md:pt-0
+        transform transition-transform duration-300 cubic-bezier(0.16, 1, 0.3, 1)
         md:relative md:translate-x-0 md:sticky md:top-0
         ${isOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full"}
       `}>
@@ -76,18 +82,6 @@ export function AdminSidebar() {
           <Link href="/admin" className="text-xl font-heading font-semibold text-foreground hover:opacity-80 transition-opacity block">
             Admin Panel
           </Link>
-        </div>
-        
-        <div className="md:hidden flex items-center justify-between p-4 border-b border-border">
-          <Link href="/admin" className="text-xl font-heading font-semibold text-foreground hover:opacity-80 transition-opacity">
-            Admin
-          </Link>
-          <button 
-            onClick={() => setIsOpen(false)} 
-            className="p-2 -mr-2 text-foreground hover:bg-muted rounded-md transition-colors"
-          >
-            <X className="w-6 h-6" />
-          </button>
         </div>
 
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">

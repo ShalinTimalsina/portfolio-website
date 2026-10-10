@@ -153,11 +153,11 @@ export default async function AdminDashboard() {
               <div className="divide-y divide-border">
                 {recentProjects.map((project) => (
                   <div key={project.id} className="p-6 flex items-center justify-between hover:bg-muted/30 transition-colors">
-                    <div>
-                      <h4 className="text-sm font-medium text-foreground">{project.title}</h4>
-                      <p className="text-xs text-muted-foreground mt-1 truncate max-w-[300px]">{project.description}</p>
+                    <div className="flex-1 min-w-0 mr-4">
+                      <h4 className="text-sm font-medium text-foreground truncate">{project.title}</h4>
+                      <p className="text-xs text-muted-foreground mt-1 truncate">{project.description}</p>
                     </div>
-                    <div className="flex flex-col items-end gap-2">
+                    <div className="flex flex-col items-end gap-2 shrink-0">
                       <span className={`px-2.5 py-1 rounded-full text-[10px] font-medium uppercase tracking-wider ${
                         project.publishedAt
                           ? "bg-emerald-500/10 text-emerald-500" 
