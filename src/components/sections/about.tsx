@@ -43,7 +43,21 @@ const links = [
   { label: "salintimalsina01@gmail.com", href: "mailto:salintimalsina01@gmail.com", icon: EnvelopeSimple, mascotState: "wave", mascotMessage: "Write me an email!" },
 ]
 
-export function AboutSection() {
+export function AboutSection({ content = {} }: { content?: Record<string, any> }) {
+  const dynamicTimeline = content["about.timeline"] || timeline
+  const dynamicStats = content["about.stats"] || [
+    { value: "22+", label: "Public Repos" },
+    { value: "AWS", label: "Certified" },
+    { value: "5+", label: "Stacks Shipped" },
+  ]
+  const bioText = content["about.bio"] || `I build cloud infrastructure and the tooling around it. My days revolve around Terraform plans, Docker containers, and AWS services — turning architecture diagrams into running systems.
+
+I earned the AWS Solutions Architect – Associate certification to validate what I was already doing: designing secure, scalable, cost-optimized architectures. Right now I am pursuing my BSc IT at Techspire College while shipping real projects — from CI/CD pipelines with GitHub Actions to Kubernetes-orchestrated microservices.
+
+When I am not staring at YAML, I am probably debugging a Dockerfile or automating something that should have been automated months ago.`
+
+  const bioParagraphs = bioText.split('\n').filter((p: string) => p.trim() !== '')
+
   return (
     <section id="about" className="py-24 md:py-32 relative">
       <div className="container px-6 mx-auto max-w-7xl w-full">
@@ -52,11 +66,11 @@ export function AboutSection() {
         <div className="flex flex-col gap-4 mb-12 md:mb-16">
           <div className="inline-flex items-center justify-center px-3 py-1.5 rounded-full border border-border bg-muted/50 w-fit">
             <span className="text-[11px] uppercase tracking-[0.15em] font-medium text-foreground">
-              About
+              {content["about.chip"] || "About"}
             </span>
           </div>
           <h2 className="text-3xl md:text-5xl font-heading font-semibold tracking-tight text-foreground">
-            Behind the Terminal.
+            {content["about.heading"] || "Behind the Terminal."}
           </h2>
         </div>
 
@@ -80,31 +94,20 @@ export function AboutSection() {
                 {/* Location badge */}
                 <div 
                   className="flex items-center gap-2 text-muted-foreground w-fit cursor-default"
-                  onMouseEnter={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching", message: "Current region: Kathmandu." } }))}
+                  onMouseEnter={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching", message: `Current region: ${content["about.location"] || "Kathmandu"}.` } }))}
                   onMouseLeave={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching" } }))}
                 >
                   <MapPin weight="bold" className="w-4 h-4 text-primary" />
-                  <span className="text-sm font-medium">Kathmandu, Nepal</span>
+                  <span className="text-sm font-medium">{content["about.location"] || "Kathmandu, Nepal"}</span>
                 </div>
 
                 {/* Bio paragraphs — first person, active voice, per CONTENT.md */}
                 <div className="flex flex-col gap-4 text-foreground/90 leading-relaxed">
-                  <p>
-                    I build cloud infrastructure and the tooling around it. My days revolve around 
-                    Terraform plans, Docker containers, and AWS services — turning architecture 
-                    diagrams into running systems.
-                  </p>
-                  <p>
-                    I earned the AWS Solutions Architect – Associate certification to validate what 
-                    I was already doing: designing secure, scalable, cost-optimized architectures. 
-                    Right now I am pursuing my BSc IT at Techspire College while shipping real 
-                    projects — from CI/CD pipelines with GitHub Actions to Kubernetes-orchestrated 
-                    microservices.
-                  </p>
-                  <p className="text-muted-foreground">
-                    When I am not staring at YAML, I am probably debugging a Dockerfile or 
-                    automating something that should have been automated months ago.
-                  </p>
+                  {bioParagraphs.map((p: string, i: number) => (
+                    <p key={i} className={i === bioParagraphs.length - 1 ? "text-muted-foreground" : ""}>
+                      {p}
+                    </p>
+                  ))}
                 </div>
 
                 {/* Links */}
@@ -129,11 +132,7 @@ export function AboutSection() {
 
             {/* Stats row */}
             <div className="grid grid-cols-3 gap-4">
-              {[
-                { value: "22+", label: "Public Repos" },
-                { value: "AWS", label: "Certified" },
-                { value: "5+", label: "Stacks Shipped" },
-              ].map((stat, i) => (
+              {dynamicStats.map((stat: any, i: number) => (
                 <motion.div
                   key={stat.label}
                   initial={{ opacity: 0, y: 16 }}
@@ -170,7 +169,7 @@ export function AboutSection() {
                 {/* Vertical line */}
                 <div className="absolute left-[11px] top-2 bottom-2 w-px bg-border" />
 
-                {timeline.map((item, i) => (
+                {dynamicTimeline.map((item: any, i: number) => (
                   <motion.div
                     key={`${item.title}-${i}`}
                     initial={{ opacity: 0, x: -10 }}
@@ -210,10 +209,10 @@ export function AboutSection() {
                         </span>
                       </div>
                       <p className="text-sm font-medium text-foreground leading-snug">
-                        {item.title}
+                        {item.event || item.title}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {item.subtitle}
+                        {item.subtitle || ""}
                       </p>
                     </div>
                   </motion.div>

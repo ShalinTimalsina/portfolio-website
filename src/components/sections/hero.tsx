@@ -8,7 +8,7 @@ import { MascotCompanion } from "@/components/mascot/mascot-companion"
 import { ArrowRight, EnvelopeSimple, TerminalWindow } from "@phosphor-icons/react"
 import { cn } from "@/lib/utils"
 
-export function HeroSection() {
+export function HeroSection({ content = {}, customCommands = [] }: { content?: Record<string, any>, customCommands?: any[] }) {
   const [isTerminalOpen, setIsTerminalOpen] = useState(true)
   const [isTerminalExpanded, setIsTerminalExpanded] = useState(false)
   const [mounted, setMounted] = useState(false)
@@ -102,7 +102,7 @@ export function HeroSection() {
               <div className="relative w-2 h-2 rounded-full bg-primary shadow-[0_0_10px_rgba(0,200,150,0.5)]" />
             </div>
             <span className="text-[11px] uppercase tracking-[0.15em] font-medium text-foreground">
-              Open to Opportunities
+              {content["hero.statusChip"] || "Open to Opportunities"}
             </span>
           </motion.div>
 
@@ -115,10 +115,10 @@ export function HeroSection() {
             className="flex flex-col gap-4"
           >
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-heading font-semibold tracking-tight text-foreground">
-              Shalin Timalsina.
+              {content["hero.heading"] || "Shalin Timalsina."}
             </h1>
             <h2 className={cn("text-xl sm:text-2xl text-muted-foreground leading-relaxed text-balance font-normal", !isTerminalOpen && "mx-auto")}>
-              Cloud & DevOps Engineer in the making building resilient infrastructure and the interfaces to understand it.
+              {content["hero.subheading"] || "Cloud & DevOps Engineer in the making building resilient infrastructure and the interfaces to understand it."}
             </h2>
           </motion.div>
 
@@ -137,7 +137,7 @@ export function HeroSection() {
               className="group inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 cursor-pointer"
             >
               <EnvelopeSimple weight="bold" className="w-5 h-5 group-hover:-translate-y-0.5 transition-transform" />
-              Let's build together
+              {content["hero.cta"] || "Let's build together"}
             </button>
             <button 
               onMouseEnter={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "thinking", message: "Check out my work!" } }))}
@@ -145,7 +145,7 @@ export function HeroSection() {
               onClick={() => { const el = document.getElementById("work"); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY, behavior: "smooth" }) }}
               className="group inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-border hover:bg-muted active:scale-[0.98] transition-all duration-200 font-medium cursor-pointer"
             >
-              View Case Studies
+              {content["hero.secondaryCta"] || "View Case Studies"}
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
             {!isTerminalOpen && (
@@ -210,6 +210,8 @@ export function HeroSection() {
                 }} 
                 isExpanded={isTerminalExpanded}
                 onExpand={() => setIsTerminalExpanded(!isTerminalExpanded)}
+                greeting={content["terminal.greeting"]}
+                customCommands={customCommands}
               />
             </motion.div>
           )}

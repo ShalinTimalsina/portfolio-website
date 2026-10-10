@@ -10,7 +10,7 @@ const AboutSection = dynamic(() => import("@/components/sections/about").then(mo
 const ContactSection = dynamic(() => import("@/components/sections/contact").then(mod => mod.ContactSection))
 
 import { db } from "@/db"
-import { projects } from "@/db/schema"
+import { projects, siteContent, terminalContent } from "@/db/schema"
 import { eq, desc, isNotNull } from "drizzle-orm"
 
 export default async function Home() {
@@ -19,17 +19,33 @@ export default async function Home() {
     .select()
     .from(projects)
     .where(isNotNull(projects.publishedAt)) // Must be published
-    // We can filter by featured if we want, or just show top 4
     .orderBy(desc(projects.sortOrder), desc(projects.createdAt))
     .limit(4);
 
+  // Fetch all site content
+  const contentRows = await db.select().from(siteContent);
+  const content = contentRows.reduce((acc, curr) => {
+    try {
+      acc[curr.key] = curr.type === 'json' ? JSON.parse(curr.value) : curr.value;
+    } catch (e) {
+      acc[curr.key] = curr.value; // Fallback
+    }
+    return acc;
+  }, {} as Record<string, any>);
+
+  // Fetch custom terminal commands
+  const customTerminalCommands = await db.select().from(terminalContent);
+
   return (
     <main className="flex min-h-screen flex-col">
-      <HeroSection />
-      <WorkSection projects={featuredProjects} />
-      <SkillsSection />
-      <AboutSection />
-      <ContactSection />
+      <HeroSection content={content} customCommands={customTerminalCommands} />
+      <WorkSection projects={featuredProjects} content={content} />
+      <SkillsSection content={content} />
+      <AboutSection content={content} />
+      <ContactSection content={content} />
+      
+      <footer className="py-8">
+      </footer>
     </main>
   )
 }

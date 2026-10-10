@@ -7,18 +7,20 @@ import Link from "next/link"
 import { toast } from "sonner"
 import { z } from "zod"
 
+import { sendMessage } from "@/app/actions"
+
 const contactSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
   email: z.string().email("Please provide a valid email address."),
   message: z.string().min(10, "Message must be at least 10 characters long.")
 })
 
-export function ContactSection() {
+export function ContactSection({ content = {} }: { content?: Record<string, any> }) {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle")
   const [formData, setFormData] = useState({ name: "", email: "", message: "" })
   const [errors, setErrors] = useState<Record<string, string>>({})
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
     const result = contactSchema.safeParse(formData)
@@ -34,13 +36,19 @@ export function ContactSection() {
 
     setErrors({})
     setStatus("loading")
-    // Fake a network request for the form simulation
-    setTimeout(() => {
+    
+    const res = await sendMessage(formData)
+    
+    if (res.error) {
+      toast.error(res.error)
+      setStatus("error")
+      setTimeout(() => setStatus("idle"), 3000)
+    } else {
       setStatus("success")
       setFormData({ name: "", email: "", message: "" })
       toast.success("200 OK: Payload delivered. I'll deploy a response soon!")
       setTimeout(() => setStatus("idle"), 3000)
-    }, 1500)
+    }
   }
 
   return (
@@ -49,11 +57,11 @@ export function ContactSection() {
         <div className="flex flex-col gap-4 mb-12 md:mb-16">
           <div className="inline-flex items-center justify-center px-3 py-1.5 rounded-full border border-border bg-muted/50 w-fit">
             <span className="text-[11px] uppercase tracking-[0.15em] font-medium text-foreground">
-              Contact
+              {content["contact.chip"] || "Contact"}
             </span>
           </div>
           <h2 className="text-3xl md:text-5xl font-heading font-semibold tracking-tight text-foreground">
-            Let's build together.
+            {content["contact.heading"] || "Let's build together."}
           </h2>
         </div>
 
@@ -74,12 +82,12 @@ export function ContactSection() {
                 Connect
               </h3>
               <p className="text-muted-foreground mb-8">
-                I'm currently open to new opportunities. Whether you have a question or just want to say hi, I'll try my best to get back to you!
+                {content["contact.description"] || "I'm currently open to new opportunities. Whether you have a question or just want to say hi, I'll try my best to get back to you!"}
               </p>
               
               <div className="flex flex-col gap-4">
                 <Link 
-                  href="mailto:salintimalsina01@gmail.com" 
+                  href={`mailto:${content["contact.email"] || "salintimalsina01@gmail.com"}`} 
                   onMouseEnter={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "wave", message: "Shoot me an email!" } }))}
                   onMouseLeave={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching" } }))}
                   className="flex items-center gap-4 p-4 rounded-xl border border-border bg-background/50 hover:bg-muted transition-all active:scale-[0.98] group"
@@ -89,12 +97,12 @@ export function ContactSection() {
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium text-foreground">Email</p>
-                    <p className="text-sm text-muted-foreground truncate">salintimalsina01@gmail.com</p>
+                    <p className="text-sm text-muted-foreground truncate">{content["contact.email"] || "salintimalsina01@gmail.com"}</p>
                   </div>
                 </Link>
 
                 <Link 
-                  href="tel:+9779862448516" 
+                  href={`tel:${content["contact.phone"] || "+9779862448516"}`} 
                   onMouseEnter={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "wave", message: "Ring ring!" } }))}
                   onMouseLeave={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching" } }))}
                   className="flex items-center gap-4 p-4 rounded-xl border border-border bg-background/50 hover:bg-muted transition-all active:scale-[0.98] group"
@@ -104,13 +112,13 @@ export function ContactSection() {
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium text-foreground">Phone</p>
-                    <p className="text-sm text-muted-foreground truncate">+977-9862448516</p>
+                    <p className="text-sm text-muted-foreground truncate">{content["contact.phone"] || "+977-9862448516"}</p>
                   </div>
                 </Link>
                 
                 <div className="flex gap-4 mt-2">
                   <Link 
-                    href="https://github.com/ShalinTimalsina" 
+                    href={content["contact.github"] || "https://github.com/ShalinTimalsina"} 
                     target="_blank"
                     onMouseEnter={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "starstruck", message: "Code!" } }))}
                     onMouseLeave={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching" } }))}
@@ -120,7 +128,7 @@ export function ContactSection() {
                     <span className="text-sm font-medium">GitHub</span>
                   </Link>
                   <Link 
-                    href="https://linkedin.com/in/shalin-timalsina" 
+                    href={content["contact.linkedin"] || "https://linkedin.com/in/shalin-timalsina"} 
                     target="_blank"
                     onMouseEnter={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "heart", message: "Connect with me!" } }))}
                     onMouseLeave={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching" } }))}

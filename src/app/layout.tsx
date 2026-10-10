@@ -67,11 +67,16 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function RootLayout({
+import { db } from "@/db";
+import { mascotLines } from "@/db/schema";
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const allMascotLines = await db.select().from(mascotLines);
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Person",
@@ -107,7 +112,7 @@ export default function RootLayout({
           <ScrollProgress />
           {children}
           <CommandPalette />
-          <MascotCompanion />
+          <MascotCompanion customLines={allMascotLines} />
           <Toaster
             position="bottom-right"
             theme="system"

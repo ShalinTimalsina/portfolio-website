@@ -80,8 +80,7 @@ export class Executor {
     let exitCode = 0
 
     if (command) {
-      if (stdin) args.push(stdin) // naive pipe implementation: pass stdin as last arg for filters, or we could handle it via IO. For bash realism, we should pass it properly. Actually, let's just expose stdin via the IO object if we can, or just pass it as the last argument for filters. Let's pass it via a special arg or property.
-      // Better: add stdin to CommandContext
+      if (stdin) args.push(stdin)
       const runCtx = { ...this.ctx, stdin }
       
       try {
@@ -90,6 +89,10 @@ export class Executor {
         bufferedIO.writeError(`bash: ${cmdName}: ${e.message}`)
         exitCode = 1
       }
+    } else if (this.ctx.customCommands?.find(c => c.command === cmdName)) {
+      const custom = this.ctx.customCommands.find(c => c.command === cmdName)!
+      bufferedIO.write(custom.output)
+      exitCode = 0
     } else {
       bufferedIO.writeError(`bash: ${cmdName}: command not found`)
       
@@ -99,6 +102,10 @@ export class Executor {
       for (const cmd of allCmds) {
         allNames.push(cmd.name)
         if (cmd.aliases) allNames.push(...cmd.aliases)
+      }
+      
+      if (this.ctx.customCommands) {
+        allNames.push(...this.ctx.customCommands.map(c => c.command))
       }
       
       const suggestions = allNames.filter(name => {

@@ -64,15 +64,17 @@ interface TerminalPanelProps {
   onClose?: () => void
   isExpanded?: boolean
   onExpand?: () => void
+  greeting?: string
+  customCommands?: { command: string, output: string }[]
 }
 
-export function TerminalPanel({ onClose, isExpanded = false, onExpand }: TerminalPanelProps) {
+export function TerminalPanel({ onClose, isExpanded = false, onExpand, greeting, customCommands = [] }: TerminalPanelProps) {
   const [isMinimized, setIsMinimized] = useState(false)
   const [history, setHistory] = useState<TerminalOutput[]>([
     {
       id: "boot-1",
       type: "text",
-      content: "Welcome to ShalinOS v3.0. Type 'help' to see available commands."
+      content: greeting || "Welcome to ShalinOS v3.0. Type 'help' to see available commands."
     }
   ])
   const [input, setInput] = useState("")
@@ -223,7 +225,8 @@ export function TerminalPanel({ onClose, isExpanded = false, onExpand }: Termina
       env: { USER: "shalin", HOME: HOME_DIR, PWD: cwd },
       fs,
       history: commandHistory,
-      stdin: ""
+      stdin: "",
+      customCommands
     }
 
     const io = {
@@ -309,7 +312,7 @@ export function TerminalPanel({ onClose, isExpanded = false, onExpand }: Termina
     } else if (e.key === "Tab") {
       e.preventDefault()
       
-      const commands = getAllCommands().map(c => c.name)
+      const commands = [...getAllCommands().map(c => c.name), ...(customCommands?.map(c => c.command) || [])]
       const args = input.split(" ")
       const lastArg = args[args.length - 1].toLowerCase()
 
@@ -451,7 +454,7 @@ export function TerminalPanel({ onClose, isExpanded = false, onExpand }: Termina
                   <div className="absolute inset-0 pointer-events-none text-muted-foreground/30 whitespace-pre flex items-center">
                     <span className="opacity-0">{input}</span>
                     {(() => {
-                      const commands = getAllCommands().map(c => c.name)
+                      const commands = [...getAllCommands().map(c => c.name), ...(customCommands?.map(c => c.command) || [])]
                       const args = input.split(" ")
                       const lastArg = args[args.length - 1].toLowerCase()
                       

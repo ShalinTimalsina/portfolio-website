@@ -49,7 +49,9 @@ const skillIcons: Record<string, string | React.ReactNode> = {
   "Monitoring": "grafana"
 }
 
-export function SkillsSection() {
+export function SkillsSection({ content = {} }: { content?: Record<string, any> }) {
+  const categories = content["skills.list"] || skillCategories
+
   return (
     <section id="skills" className="py-24 md:py-32 bg-background min-h-[100dvh] flex flex-col">
       <div className="container px-6 mx-auto max-w-7xl w-full my-auto">
@@ -57,17 +59,17 @@ export function SkillsSection() {
         <div className="flex flex-col gap-4 mb-12 md:mb-16">
           <div className="inline-flex items-center justify-center px-3 py-1.5 rounded-full border border-border bg-muted/50 w-fit">
             <span className="text-[11px] uppercase tracking-[0.15em] font-medium text-foreground">
-              Skills & Stack
+              {content["skills.chip"] || "Skills & Stack"}
             </span>
           </div>
           <h2 className="text-3xl md:text-5xl font-heading font-semibold tracking-tight text-foreground">
-            Tools of the Trade.
+            {content["skills.heading"] || "Tools of the Trade."}
           </h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6" onMouseLeave={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching" } }))}>
-          {skillCategories.map((category, i) => (
-            <SkillCard key={category.title} category={category} index={i} />
+          {categories.map((category: any, i: number) => (
+            <SkillCard key={category.title} category={{...category, delay: category.delay || (i * 0.1 + 0.1)}} index={i} />
           ))}
         </div>
       </div>

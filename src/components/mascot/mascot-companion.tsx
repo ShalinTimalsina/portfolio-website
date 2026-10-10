@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react"
 import { motion, AnimatePresence } from "motion/react"
+import { usePathname } from "next/navigation"
 
 // Types of states our mascot can be in
 type MascotState = 
@@ -31,8 +32,10 @@ const REACTION_MAP = {
   idle: { x: 100, y: 100 }, // fallback
 }
 
-export function MascotCompanion() {
+export function MascotCompanion({ customLines = [] }: { customLines?: { trigger: string, line: string }[] }) {
   const containerRef = useRef<HTMLDivElement>(null)
+  const pathname = usePathname()
+  const isAdmin = pathname?.startsWith("/admin")
   
   // State
   const [currentState, setCurrentState] = useState<MascotState>("idle")
@@ -122,7 +125,11 @@ export function MascotCompanion() {
       const customEvent = e as CustomEvent<{ state: MascotState, message?: string }>
       setCurrentState(customEvent.detail.state)
       
-      if (customEvent.detail.message) {
+      const custom = customLines.find(c => c.trigger === customEvent.detail.state)
+      
+      if (custom && custom.line) {
+        setSpeech(custom.line)
+      } else if (customEvent.detail.message) {
         setSpeech(customEvent.detail.message)
       }
 
@@ -205,6 +212,8 @@ export function MascotCompanion() {
 
   // Click interaction
   const handleClick = () => {
+    // If in admin, mascot is click-through, but handle it just in case
+    if (isAdmin) return;
     setCurrentState("wave")
     setSpeech("All systems operational.")
     
@@ -260,6 +269,10 @@ export function MascotCompanion() {
     }
   }
 
+  if (isAdmin) {
+    return null
+  }
+
   return (
     <div className="fixed bottom-6 right-6 z-40 pointer-events-none">
       <AnimatePresence>
@@ -302,7 +315,7 @@ export function MascotCompanion() {
             }}
             whileHover={{ scale: 1.05, rotate: 3, y: -4 }}
             whileTap={{ scale: 0.9, rotate: -6 }}
-            className="relative w-[120px] h-[120px] lg:w-[140px] lg:h-[140px] cursor-pointer pointer-events-auto drop-shadow-2xl"
+            className="relative w-[120px] h-[120px] lg:w-[140px] lg:h-[140px] drop-shadow-2xl cursor-pointer pointer-events-auto"
             style={getSpriteStyles()}
             aria-label="Shalin's Mascot Companion"
             role="button"

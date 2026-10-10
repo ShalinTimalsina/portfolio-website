@@ -15,7 +15,7 @@ type DBProject = {
   repoUrl: string | null;
 };
 
-export function WorkSection({ projects }: { projects: DBProject[] }) {
+export function WorkSection({ projects, content = {} }: { projects: DBProject[], content?: Record<string, any> }) {
   return (
     <section id="work" className="py-24 md:py-32 relative min-h-[100dvh] flex flex-col">
       <div className="container px-6 mx-auto max-w-7xl w-full">
@@ -23,11 +23,11 @@ export function WorkSection({ projects }: { projects: DBProject[] }) {
         <div className="flex flex-col gap-4 mb-12 md:mb-16">
           <div className="inline-flex items-center justify-center px-3 py-1.5 rounded-full border border-border bg-muted/50 w-fit">
             <span className="text-[11px] uppercase tracking-[0.15em] font-medium text-foreground">
-              Selected Work
+              {content["work.chip"] || "Selected Work"}
             </span>
           </div>
           <h2 className="text-3xl md:text-5xl font-heading font-semibold tracking-tight text-foreground">
-            Infrastructure & Code.
+            {content["work.heading"] || "Infrastructure & Code."}
           </h2>
         </div>
 

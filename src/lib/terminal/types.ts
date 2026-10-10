@@ -31,6 +31,7 @@ export interface CommandContext {
   fs: INode
   history: string[]
   stdin: string
+  customCommands?: { command: string, output: string }[]
 }
 
 export interface CommandIO {
