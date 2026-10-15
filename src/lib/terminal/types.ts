@@ -34,11 +34,16 @@ export interface CommandContext {
   customCommands?: { command: string, output: string }[]
 }
 
+export interface ReadOptions {
+  prompt?: string
+  mask?: boolean
+}
+
 export interface CommandIO {
   write: (text: string | TerminalOutputNode) => void
   writeError: (text: string) => void
   clear: () => void
-  read: () => Promise<string>
+  read: (options?: ReadOptions) => Promise<string>
   scrollTo: (sectionId: string) => void
   dispatchMascot: (payload: MascotEventPayload) => void
 }
@@ -48,6 +53,7 @@ export interface CommandDefinition {
   aliases?: string[]
   description: string
   usage: string
+  hidden?: boolean
   flags?: Record<string, string>
   run: (ctx: CommandContext, args: string[], io: CommandIO) => Promise<number> | number
   complete?: (ctx: CommandContext, partial: string) => string[]

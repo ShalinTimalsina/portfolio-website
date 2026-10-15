@@ -1,6 +1,6 @@
 import { registerCommand } from "./registry"
 import { lsCmd, cdCmd, catCmd, rmCmd, touchCmd, mkdirCmd } from "./commands/fs"
-import { helpCmd, clearCmd, echoCmd, pwdCmd, whoamiCmd, unameCmd, dateCmd, historyCmd, pingCmd, ifconfigCmd, sudoCmd, neofetchCmd, topCmd, sshCmd, nanoCmd, vimCmd, rebootCmd, shutdownCmd, exitCmd, themeCmd, fullscreenCmd, aliasCmd } from "./commands/core"
+import { helpCmd, clearCmd, echoCmd, pwdCmd, whoamiCmd, unameCmd, dateCmd, historyCmd, pingCmd, ifconfigCmd, sudoCmd, sslCmd, neofetchCmd, topCmd, sshCmd, nanoCmd, vimCmd, rebootCmd, shutdownCmd, exitCmd, themeCmd, fullscreenCmd, aliasCmd } from "./commands/core"
 import { grepCmd, wcCmd, headCmd, tailCmd } from "./commands/filters"
 import { dockerCmd, kubectlCmd, terraformCmd, awsCmd } from "./commands/devops"
 import { Executor } from "./executor"
@@ -35,6 +35,7 @@ const initRegistry = () => {
   registerCommand(pingCmd)
   registerCommand(ifconfigCmd)
   registerCommand(sudoCmd)
+  registerCommand(sslCmd)
   registerCommand(grepCmd)
   registerCommand(wcCmd)
   registerCommand(headCmd)

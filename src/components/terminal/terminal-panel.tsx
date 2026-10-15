@@ -83,9 +83,20 @@ export function TerminalPanel({ onClose, isExpanded = false, onExpand, greeting,
   const [commandHistory, setCommandHistory] = useState<string[]>([])
   const [historyIndex, setHistoryIndex] = useState(-1)
   const [isRebooting, setIsRebooting] = useState(false)
+  const [promptState, setPromptState] = useState<{
+    prompt: string
+    mask: boolean
+    resolve: (value: string) => void
+  } | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
   const typingPhraseRef = useRef("Hacking the mainframe...")
+
+  useEffect(() => {
+    if (promptState && inputRef.current) {
+      inputRef.current.focus({ preventScroll: true })
+    }
+  }, [promptState])
 
   const scrollToBottom = () => {
     if (scrollRef.current) {
@@ -212,19 +223,35 @@ export function TerminalPanel({ onClose, isExpanded = false, onExpand, greeting,
     const trimmed = cmd.trim()
     if (!trimmed) return
 
+    // Clear input immediately so any downstream prompt starts with an empty field
+    setInput("")
+
+    const lower = trimmed.toLowerCase()
+    const isSecretCmd = 
+      lower === "sudo ssl" ||
+      lower === "ssl" ||
+      lower.startsWith("sudo ssl ") ||
+      lower.startsWith("ssl ") ||
+      lower === "sudo secret-login" ||
+      lower === "secret-login" ||
+      lower.startsWith("sudo secret-login ") ||
+      lower.startsWith("secret-login ")
+
     setHistory(prev => [
       ...prev,
       { id: `cmd-${Date.now()}`, type: "command", content: `shalin@cloud:${formatCwd(cwd)}$ ${trimmed}` }
     ])
 
-    setCommandHistory(prev => [...prev, trimmed])
+    if (!isSecretCmd) {
+      setCommandHistory(prev => [...prev, trimmed])
+    }
     setHistoryIndex(-1)
 
     const ctx: CommandContext = {
       cwd,
       env: { USER: "shalin", HOME: HOME_DIR, PWD: cwd },
       fs,
-      history: commandHistory,
+      history: isSecretCmd ? commandHistory : [...commandHistory, trimmed],
       stdin: "",
       customCommands
     }
@@ -233,7 +260,16 @@ export function TerminalPanel({ onClose, isExpanded = false, onExpand, greeting,
       write: (text: string | TerminalOutputNode) => appendHistory("text", renderOutputNode(text)),
       writeError: (text: string) => appendHistory("error", text),
       clear: () => setHistory([]),
-      read: async () => "",
+      read: (options?: { prompt?: string; mask?: boolean }) => {
+        setInput("")
+        return new Promise<string>((resolve) => {
+          setPromptState({
+            prompt: options?.prompt ?? "",
+            mask: options?.mask ?? false,
+            resolve
+          })
+        })
+      },
       scrollTo: (id: string) => {
         setTimeout(() => {
           requestAnimationFrame(() => {
@@ -266,6 +302,15 @@ export function TerminalPanel({ onClose, isExpanded = false, onExpand, greeting,
 
     if (e.ctrlKey && e.key === "c") {
       e.preventDefault()
+      if (promptState) {
+        appendHistory("text", `${promptState.prompt}^C`)
+        setInput("")
+        const resolver = promptState.resolve
+        setPromptState(null)
+        resolver("")
+        window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching" } }))
+        return
+      }
       setHistory(prev => [
         ...prev,
         { id: `cmd-${Date.now()}`, type: "command", content: `shalin@cloud:${formatCwd(cwd)}$ ${input}^C` }
@@ -291,8 +336,33 @@ export function TerminalPanel({ onClose, isExpanded = false, onExpand, greeting,
     }
 
     if (e.key === "Enter") {
+      if (promptState) {
+        e.preventDefault()
+        const val = input
+        setInput("")
+        // In real Linux sudo, pressing enter commits the prompt line without leaving password characters
+        appendHistory("text", promptState.prompt)
+        const resolver = promptState.resolve
+        setPromptState(null)
+        resolver(val)
+        return
+      }
       handleCommand(input)
-    } else if (e.key === "ArrowUp") {
+      return
+    }
+
+    if (promptState) {
+      if (e.key === "Tab" || e.key === "ArrowUp" || e.key === "ArrowDown") {
+        e.preventDefault()
+        return
+      }
+      if (promptState.mask) {
+        window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching", message: "Entering credentials..." } }))
+        return
+      }
+    }
+
+    if (e.key === "ArrowUp") {
       e.preventDefault()
       if (historyIndex < commandHistory.length - 1) {
         const nextIndex = historyIndex + 1
@@ -447,10 +517,28 @@ export function TerminalPanel({ onClose, isExpanded = false, onExpand, greeting,
         {!isRebooting && (
           <div className="flex flex-col gap-1">
             <div className="flex items-center group relative font-mono">
-              <span className="text-primary font-semibold mr-2 shrink-0">shalin@cloud:{formatCwd(cwd)}$</span>
-              <div className="relative flex-1">
-                {/* Ghost text for autocomplete (fish-shell style) */}
-                {input && (
+              {promptState ? (
+                <span className="text-foreground/90 font-medium mr-2 shrink-0 select-none">
+                  {promptState.prompt}
+                </span>
+              ) : (
+                <span className="text-primary font-semibold mr-2 shrink-0 select-none">
+                  shalin@cloud:{formatCwd(cwd)}$
+                </span>
+              )}
+              <div className="relative flex-1 flex items-center min-h-[24px]">
+                {/* Linux terminal password feedback: crisp monospace asterisks with blinking block cursor */}
+                {promptState?.mask ? (
+                  <div className="flex items-center text-foreground font-mono select-none pointer-events-none z-0">
+                    <span className="tracking-[0.2em] font-mono font-bold text-foreground">
+                      {"*".repeat(input.length)}
+                    </span>
+                    <span className="inline-block w-2.5 h-4 bg-primary animate-pulse ml-0.5" />
+                  </div>
+                ) : null}
+
+                {/* Ghost text for autocomplete (fish-shell style) in normal mode */}
+                {input && !promptState && (
                   <div className="absolute inset-0 pointer-events-none text-muted-foreground/30 whitespace-pre flex items-center">
                     <span className="opacity-0">{input}</span>
                     {(() => {
@@ -496,7 +584,8 @@ export function TerminalPanel({ onClose, isExpanded = false, onExpand, greeting,
                 <input
                   ref={inputRef}
                   type="text"
-                  aria-label="Terminal command input"
+                  name="cli-terminal-input"
+                  aria-label={promptState ? promptState.prompt : "Terminal command input"}
                   value={input}
                   onChange={(e) => {
                     const val = e.target.value
@@ -507,16 +596,24 @@ export function TerminalPanel({ onClose, isExpanded = false, onExpand, greeting,
                     setInput(val)
                   }}
                   onKeyDown={handleKeyDown}
-                  className="w-full bg-transparent border-none outline-none text-foreground caret-primary absolute inset-0 z-10 placeholder:text-muted-foreground/30"
+                  className={cn(
+                    "w-full bg-transparent border-none outline-none font-mono absolute inset-0 z-10",
+                    promptState?.mask
+                      ? "text-transparent caret-transparent selection:bg-transparent"
+                      : "text-foreground caret-primary placeholder:text-muted-foreground/30"
+                  )}
                   autoComplete="off"
-                  spellCheck="false"
                   autoCorrect="off"
                   autoCapitalize="off"
+                  spellCheck="false"
+                  data-lpignore="true"
+                  data-1p-ignore="true"
+                  data-form-type="other"
                   autoFocus
                 />
                 {/* Invisible element to maintain height for absolute input */}
                 <div className="invisible whitespace-pre" aria-hidden="true">
-                  {input || " "}
+                  {promptState?.mask ? "*".repeat(input.length) || " " : input || " "}
                 </div>
               </div>
             </div>

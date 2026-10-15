@@ -145,10 +145,21 @@ export const historyCmd: CommandDefinition = {
   description: "Display command history",
   usage: "history",
   run: (ctx, args, io) => {
-    const list = ctx.history.map((cmd, idx) => ({
-      type: "text" as const,
-      content: `  ${idx + 1}  ${cmd}`
-    }))
+    const list = ctx.history
+      .filter((cmd) => {
+        const lower = cmd.toLowerCase().trim()
+        return (
+          !lower.includes("secret-login") &&
+          lower !== "ssl" &&
+          !lower.startsWith("ssl ") &&
+          lower !== "sudo ssl" &&
+          !lower.startsWith("sudo ssl ")
+        )
+      })
+      .map((cmd, idx) => ({
+        type: "text" as const,
+        content: `  ${idx + 1}  ${cmd}`
+      }))
     io.write({ type: "table", content: list })
     return 0
   }
@@ -232,6 +243,10 @@ export const sudoCmd: CommandDefinition = {
       return 0
     }
     
+    if (subCmd.toLowerCase() === "ssl" || subCmd.toLowerCase() === "secret-login") {
+      return runSecretLogin(ctx, args.slice(1), io)
+    }
+    
     // Otherwise execute normally
     const { getCommand } = await import("../registry")
     const command = getCommand(subCmd)
@@ -242,6 +257,109 @@ export const sudoCmd: CommandDefinition = {
     return 127
   }
 }
+
+export async function runSecretLogin(ctx: CommandContext, args: string[], io: CommandIO): Promise<number> {
+  const { checkTerminalAuthStatus, verifyTerminalAdminLogin } = await import("../auth-actions")
+  
+  // 1. Initial lockout status check
+  const status = await checkTerminalAuthStatus()
+  if (status.locked) {
+    io.writeError(`sudo: ${status.error || "Terminal authentication is locked."}`)
+    io.dispatchMascot({ state: "error", message: "Security lockout active." })
+    return 1
+  }
+
+  // 2. Interactive password loop (up to 3 attempts, matching Linux sudo)
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    const password = await io.read({
+      prompt: "[sudo] password for admin: ",
+      mask: true
+    })
+
+    // If cancelled or empty
+    if (!password) {
+      io.writeError("sudo: a password is required")
+      io.dispatchMascot({ state: "watching", message: "Cancelled." })
+      return 1
+    }
+
+    // Verify credentials
+    const result = await verifyTerminalAdminLogin(password)
+
+    if (result.success && result.username) {
+      // Authenticate NextAuth session on the client
+      try {
+        const { signIn } = await import("next-auth/react")
+        const signInResult = await signIn("credentials", {
+          username: result.username,
+          password,
+          redirect: false
+        })
+
+        if (signInResult?.ok) {
+          io.write({
+            type: "color",
+            color: "text-emerald-400 font-mono font-semibold",
+            content: "[sudo] session opened for user admin by shalin(uid=0)"
+          })
+          io.dispatchMascot({
+            state: "celebrate",
+            message: "Welcome back, Commander!"
+          })
+
+          setTimeout(() => {
+            window.location.href = "/admin"
+          }, 350)
+
+          return 0
+        } else {
+          io.writeError("sudo: session creation failed. Please check server logs.")
+          return 1
+        }
+      } catch (err) {
+        // Fallback redirection if signIn threw (e.g. offline/mock)
+        io.write({
+          type: "color",
+          color: "text-emerald-400 font-mono",
+          content: "[sudo] session opened for user admin (redirecting...)"
+        })
+        setTimeout(() => {
+          window.location.href = "/admin"
+        }, 350)
+        return 0
+      }
+    }
+
+    // Authentication failure
+    if (result.locked) {
+      io.writeError(`sudo: ${result.error}`)
+      io.dispatchMascot({ state: "error", message: "Security lockout!" })
+      return 1
+    }
+
+    if (attempt < 3) {
+      io.writeError(`sudo: ${attempt} incorrect password attempt`)
+      io.dispatchMascot({ state: "error", message: "Incorrect password." })
+    } else {
+      io.writeError("sudo: 3 incorrect password attempts. This incident will be reported.")
+      io.dispatchMascot({ state: "error", message: "Incident reported!" })
+      return 1
+    }
+  }
+
+  return 1
+}
+
+export const sslCmd: CommandDefinition = {
+  name: "ssl",
+  aliases: ["secret-login"],
+  description: "Administrative access gateway",
+  usage: "sudo ssl",
+  hidden: true,
+  run: (ctx, args, io) => runSecretLogin(ctx, args, io)
+}
+
+export const secretLoginCmd = sslCmd
 
 export const neofetchCmd: CommandDefinition = {
   name: "neofetch",

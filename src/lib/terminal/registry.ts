@@ -17,8 +17,10 @@ export function getCommand(name: string): CommandDefinition | undefined {
   return registry.get(resolved)
 }
 
-export function getAllCommands(): CommandDefinition[] {
-  return Array.from(registry.values())
+export function getAllCommands(includeHidden: boolean = false): CommandDefinition[] {
+  const all = Array.from(registry.values())
+  if (includeHidden) return all
+  return all.filter(c => !c.hidden)
 }
 
 export function getAllAliases(): Map<string, string> {
