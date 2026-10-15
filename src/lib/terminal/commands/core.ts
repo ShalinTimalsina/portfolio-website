@@ -1,4 +1,4 @@
-import { CommandDefinition } from "../types"
+import { CommandDefinition, CommandContext, CommandIO } from "../types"
 import { getAllAliases, registerAlias } from "../registry"
 
 export const helpCmd: CommandDefinition = {
