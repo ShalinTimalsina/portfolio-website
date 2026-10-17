@@ -85,8 +85,10 @@ export function HeroSection({ content = {}, customCommands = [] }: { content?: R
             }
           }}
           className={cn(
-            "flex flex-col gap-6 items-center lg:items-start text-center lg:text-left",
-            isTerminalOpen ? "max-w-xl mx-auto lg:mx-0" : "max-w-3xl items-center text-center mx-auto"
+            "flex flex-col gap-6",
+            isTerminalOpen 
+              ? "max-w-xl mx-auto lg:mx-0 items-center lg:items-start text-center lg:text-left" 
+              : "max-w-3xl items-center text-center mx-auto"
           )}
         >
           <motion.div 
@@ -112,12 +114,21 @@ export function HeroSection({ content = {}, customCommands = [] }: { content?: R
               hidden: { opacity: 0, y: 16 },
               visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.32, 0.72, 0, 1] } }
             }}
-            className="flex flex-col gap-4 items-center lg:items-start w-full"
+            className={cn(
+              "flex flex-col gap-4 w-full",
+              isTerminalOpen ? "items-center lg:items-start" : "items-center"
+            )}
           >
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-heading font-semibold tracking-tight text-foreground text-center lg:text-left">
+            <h1 className={cn(
+              "text-5xl sm:text-6xl lg:text-7xl font-heading font-semibold tracking-tight text-foreground",
+              isTerminalOpen ? "text-center lg:text-left" : "text-center"
+            )}>
               {content["hero.heading"] || "Shalin Timalsina."}
             </h1>
-            <h2 className={cn("text-xl sm:text-2xl text-muted-foreground leading-relaxed text-balance font-normal text-center lg:text-left", !isTerminalOpen && "mx-auto")}>
+            <h2 className={cn(
+              "text-xl sm:text-2xl text-muted-foreground leading-relaxed text-balance font-normal",
+              isTerminalOpen ? "text-center lg:text-left" : "text-center mx-auto"
+            )}>
               {content["hero.subheading"] || "Cloud & DevOps Engineer in the making building resilient infrastructure and the interfaces to understand it."}
             </h2>
           </motion.div>
@@ -128,7 +139,10 @@ export function HeroSection({ content = {}, customCommands = [] }: { content?: R
               hidden: { opacity: 0, y: 16 },
               visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.32, 0.72, 0, 1] } }
             }}
-            className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-4"
+            className={cn(
+              "flex flex-wrap items-start gap-4 pt-4",
+              isTerminalOpen ? "justify-center lg:justify-start" : "justify-center"
+            )}
           >
             <button 
               onMouseEnter={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "heart", message: "Let's do it!" } }))}
@@ -139,15 +153,53 @@ export function HeroSection({ content = {}, customCommands = [] }: { content?: R
               <EnvelopeSimple weight="bold" className="w-5 h-5 group-hover:-translate-y-0.5 transition-transform" />
               {content["hero.cta"] || "Let's build together"}
             </button>
-            <button 
-              onMouseEnter={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "thinking", message: "Check out my work!" } }))}
-              onMouseLeave={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching" } }))}
-              onClick={() => { const el = document.getElementById("work"); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY, behavior: "smooth" }) }}
-              className="group inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-border hover:bg-muted active:scale-[0.98] transition-all duration-200 font-medium cursor-pointer"
-            >
-              {content["hero.secondaryCta"] || "View Case Studies"}
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </button>
+
+            {/* View Case Studies CTA (+ Centered Search Button when terminal is closed) */}
+            {!isTerminalOpen ? (
+              <div className="flex flex-col items-center gap-4">
+                <button 
+                  onMouseEnter={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "thinking", message: "Check out my work!" } }))}
+                  onMouseLeave={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching" } }))}
+                  onClick={() => { const el = document.getElementById("work"); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY, behavior: "smooth" }) }}
+                  className="group inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg border border-border hover:bg-muted active:scale-[0.98] transition-all duration-200 font-medium cursor-pointer"
+                >
+                  {content["hero.secondaryCta"] || "View Case Studies"}
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </button>
+
+                <button
+                  onClick={() => {
+                    window.dispatchEvent(new CustomEvent("open-command-palette"))
+                    window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "thinking", message: "Searching..." } }))
+                  }}
+                  className="group/kbd inline-flex items-center justify-center gap-2 px-4 py-2 min-h-[44px] sm:min-h-0 rounded-full border border-border bg-muted/50 hover:bg-muted text-xs text-muted-foreground hover:text-foreground transition-all duration-200 active:scale-95 shadow-sm cursor-pointer whitespace-nowrap"
+                  aria-label="Open Command Search"
+                >
+                  <MagnifyingGlass className="w-3.5 h-3.5 text-primary" weight="bold" />
+                  <span className="hidden sm:inline-flex items-center gap-1.5">
+                    <span>Press</span>
+                    <kbd className="px-1.5 py-0.5 rounded bg-background text-[11px] border font-mono font-medium group-hover/kbd:border-primary/40 transition-colors">
+                      {mounted && typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform) ? "⌘" : "Ctrl"} K
+                    </kbd>
+                    <span>to search</span>
+                  </span>
+                  <span className="inline-flex sm:hidden">
+                    Tap to search
+                  </span>
+                </button>
+              </div>
+            ) : (
+              <button 
+                onMouseEnter={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "thinking", message: "Check out my work!" } }))}
+                onMouseLeave={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching" } }))}
+                onClick={() => { const el = document.getElementById("work"); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY, behavior: "smooth" }) }}
+                className="group inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg border border-border hover:bg-muted active:scale-[0.98] transition-all duration-200 font-medium cursor-pointer"
+              >
+                {content["hero.secondaryCta"] || "View Case Studies"}
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </button>
+            )}
+
             {!isTerminalOpen && (
               <button 
                 onClick={() => setIsTerminalOpen(true)}
@@ -160,38 +212,38 @@ export function HeroSection({ content = {}, customCommands = [] }: { content?: R
               </button>
             )}
           </motion.div>
-          
-          <motion.div 
-            layout 
-            variants={{
-              hidden: { opacity: 0, y: 16 },
-              visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.32, 0.72, 0, 1] } }
-            }}
-            className="pt-2 flex justify-center lg:justify-start w-full"
-          >
-            <button
-              onClick={() => {
-                window.dispatchEvent(new CustomEvent("open-command-palette"))
-                window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "thinking", message: "Searching..." } }))
-              }}
-              className="group/kbd inline-flex items-center justify-center gap-2 px-4 py-2 min-h-[44px] sm:min-h-0 rounded-full border border-border bg-muted/50 hover:bg-muted text-xs text-muted-foreground hover:text-foreground transition-all duration-200 active:scale-95 shadow-sm cursor-pointer"
-              aria-label="Open Command Search"
+
+          {/* When terminal is open: Left-aligned Search button row with breathing room */}
+          {isTerminalOpen && (
+            <motion.div
+              layout
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+              className="pt-4 flex justify-center lg:justify-start w-full"
             >
-              <MagnifyingGlass className="w-3.5 h-3.5 text-primary" weight="bold" />
-              {/* Desktop / Keyboard view */}
-              <span className="hidden sm:inline-flex items-center gap-1.5">
-                <span>Press</span>
-                <kbd className="px-1.5 py-0.5 rounded bg-background text-[11px] border font-mono font-medium group-hover/kbd:border-primary/40 transition-colors">
-                  {mounted && typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform) ? "⌘" : "Ctrl"} K
-                </kbd>
-                <span>to search</span>
-              </span>
-              {/* Mobile touch view */}
-              <span className="inline-flex sm:hidden">
-                Tap to search
-              </span>
-            </button>
-          </motion.div>
+              <button
+                onClick={() => {
+                  window.dispatchEvent(new CustomEvent("open-command-palette"))
+                  window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "thinking", message: "Searching..." } }))
+                }}
+                className="group/kbd inline-flex items-center justify-center gap-2 px-4 py-2 min-h-[44px] sm:min-h-0 rounded-full border border-border bg-muted/50 hover:bg-muted text-xs text-muted-foreground hover:text-foreground transition-all duration-200 active:scale-95 shadow-sm cursor-pointer whitespace-nowrap"
+                aria-label="Open Command Search"
+              >
+                <MagnifyingGlass className="w-3.5 h-3.5 text-primary" weight="bold" />
+                <span className="hidden sm:inline-flex items-center gap-1.5">
+                  <span>Press</span>
+                  <kbd className="px-1.5 py-0.5 rounded bg-background text-[11px] border font-mono font-medium group-hover/kbd:border-primary/40 transition-colors">
+                    {mounted && typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform) ? "⌘" : "Ctrl"} K
+                  </kbd>
+                  <span>to search</span>
+                </span>
+                <span className="inline-flex sm:hidden">
+                  Tap to search
+                </span>
+              </button>
+            </motion.div>
+          )}
         </motion.div>
 
         {/* Right: Terminal (Animated between inline and fullscreen) */}
