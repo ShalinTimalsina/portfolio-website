@@ -111,7 +111,7 @@ function SkillCard({ category, index: i }: { category: typeof skillCategories[0]
       
       <div className="flex flex-col gap-2 relative z-10 pointer-events-auto">
         <div className="flex items-center gap-3">
-          <div className={`w-2 h-2 rounded-full ${i === 0 ? "bg-primary animate-pulse shadow-[0_0_10px_rgba(0,200,150,0.5)]" : "bg-muted-foreground"}`} />
+          <div className={`w-2 h-2 rounded-full ${i === 0 ? "bg-primary animate-pulse will-change-transform shadow-[0_0_10px_rgba(0,200,150,0.5)]" : "bg-muted-foreground"}`} />
           <h3 className="text-xl font-heading font-semibold text-foreground">
             {category.title}
           </h3>

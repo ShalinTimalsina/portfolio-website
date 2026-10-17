@@ -3,12 +3,18 @@ import { Outfit, Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/shared/theme-provider";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
-import { CommandPalette } from "@/components/shared/command-palette";
 import { ScrollProgress } from "@/components/shared/scroll-progress";
 import { Toaster } from "sonner";
-import { MascotCompanion } from "@/components/mascot/mascot-companion";
+import dynamic from "next/dynamic";
 import { Analytics } from "@vercel/analytics/next";
 import Script from "next/script";
+
+const CommandPalette = dynamic(
+  () => import("@/components/shared/command-palette").then(mod => mod.CommandPalette)
+);
+const MascotCompanion = dynamic(
+  () => import("@/components/mascot/mascot-companion").then(mod => mod.MascotCompanion)
+);
 
 // Primary heading font
 const fontHeading = Outfit({
@@ -91,10 +97,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
-      <head>
-        <link rel="preload" href="/characters/shalin/directions.png" as="image" />
-        <link rel="preload" href="/characters/shalin/reactions.png" as="image" />
-      </head>
+      <head />
       <body
         suppressHydrationWarning
         className={`${fontHeading.variable} ${fontBody.variable} ${fontMono.variable} antialiased selection:bg-primary/20 selection:text-primary min-h-screen bg-background text-foreground transition-colors duration-300`}

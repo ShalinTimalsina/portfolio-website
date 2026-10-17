@@ -85,12 +85,12 @@ function ProjectCard({ project, index: i }: { project: DBProject, index: number 
                   </h3>
                   <div className="flex gap-3 shrink-0">
                     {project.liveUrl && (
-                      <Link href={project.liveUrl} target="_blank" aria-label={`View live site for ${project.title}`} className="group/btn active:scale-95 text-muted-foreground hover:text-foreground transition-all duration-200 bg-surface border border-border p-2 rounded-full hover:border-primary/50 hover:shadow-[0_0_15px_rgba(0,200,150,0.1)]">
+                      <Link href={project.liveUrl} target="_blank" aria-label={`View live site for ${project.title}`} className="group/btn active:scale-95 text-muted-foreground hover:text-foreground transition-all duration-200 bg-surface border border-border p-2 min-w-12 min-h-12 inline-flex items-center justify-center rounded-full hover:border-primary/50 hover:shadow-[0_0_15px_rgba(0,200,150,0.1)]">
                         <ArrowUpRight className="w-4 h-4 group-hover/btn:-translate-y-0.5 group-hover/btn:translate-x-0.5 transition-transform" />
                       </Link>
                     )}
                     {project.repoUrl && (
-                      <Link href={project.repoUrl} target="_blank" aria-label={`View GitHub repository for ${project.title}`} className="group/btn active:scale-95 text-muted-foreground hover:text-foreground transition-all duration-200 bg-surface border border-border p-2 rounded-full hover:border-primary/50 hover:shadow-[0_0_15px_rgba(0,200,150,0.1)]">
+                      <Link href={project.repoUrl} target="_blank" aria-label={`View GitHub repository for ${project.title}`} className="group/btn active:scale-95 text-muted-foreground hover:text-foreground transition-all duration-200 bg-surface border border-border p-2 min-w-12 min-h-12 inline-flex items-center justify-center rounded-full hover:border-primary/50 hover:shadow-[0_0_15px_rgba(0,200,150,0.1)]">
                         <GithubLogo className="w-4 h-4 group-hover/btn:-translate-y-0.5 transition-transform" weight="fill" />
                       </Link>
                     )}

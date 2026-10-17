@@ -110,10 +110,50 @@ export function MascotCompanion({ customLines = [] }: { customLines?: { trigger:
       img.src = src
     }
 
-    removeGreenScreen("/characters/shalin/directions.png", setProcessedDirections)
-    removeGreenScreen("/characters/shalin/reactions.png", setProcessedReactions)
+    // Defer heavy green-screen processing until the main thread is idle
+    // This prevents blocking the critical rendering path (hero, LCP, FCP)
+    const startWhenIdle = (callback: () => void): number | ReturnType<typeof setTimeout> => {
+      const win = window as Window & {
+        requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number
+      }
+      if (typeof win.requestIdleCallback === "function") {
+        return win.requestIdleCallback(() => callback(), { timeout: 3000 })
+      }
+      return setTimeout(callback, 2500)
+    }
 
-    return () => mql.removeEventListener("change", handler)
+    const idleHandle = startWhenIdle(() => {
+      // Try WebP first (much smaller), fall back to PNG
+      const ext = "webp"
+      const dirSrc = `/characters/shalin/directions.${ext}`
+      const reactSrc = `/characters/shalin/reactions.${ext}`
+
+      // Test if the webp files exist by checking the first one
+      const testImg = new Image()
+      testImg.onload = () => {
+        removeGreenScreen(dirSrc, setProcessedDirections)
+        removeGreenScreen(reactSrc, setProcessedReactions)
+      }
+      testImg.onerror = () => {
+        // Fall back to PNG
+        removeGreenScreen("/characters/shalin/directions.png", setProcessedDirections)
+        removeGreenScreen("/characters/shalin/reactions.png", setProcessedReactions)
+      }
+      testImg.src = dirSrc
+    })
+
+    return () => {
+      mql.removeEventListener("change", handler)
+      // Clean up: cancel idle callback or timeout
+      const win = window as Window & {
+        cancelIdleCallback?: (id: number) => void
+      }
+      if (typeof win.cancelIdleCallback === "function" && typeof idleHandle === "number") {
+        win.cancelIdleCallback(idleHandle)
+      } else {
+        clearTimeout(idleHandle)
+      }
+    }
   }, [])
 
   // Cursor Tracking & Global Events
@@ -315,7 +355,7 @@ export function MascotCompanion({ customLines = [] }: { customLines?: { trigger:
             }}
             whileHover={{ scale: 1.05, rotate: 3, y: -4 }}
             whileTap={{ scale: 0.9, rotate: -6 }}
-            className="relative w-[120px] h-[120px] lg:w-[140px] lg:h-[140px] drop-shadow-2xl cursor-pointer pointer-events-auto"
+            className="relative w-[120px] h-[120px] lg:w-[140px] lg:h-[140px] drop-shadow-2xl cursor-pointer pointer-events-auto will-change-transform"
             style={getSpriteStyles()}
             aria-label="Shalin's Mascot Companion"
             role="button"

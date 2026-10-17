@@ -451,7 +451,7 @@ export function TerminalPanel({ onClose, isExpanded = false, onExpand, greeting,
               onClick={() => {
                 if (onClose) onClose()
               }}
-              className="relative w-3 h-3 rounded-full bg-red-500 hover:bg-red-600 transition-colors cursor-pointer after:absolute after:-inset-3" 
+              className="relative w-3 h-3 rounded-full bg-red-500 hover:bg-red-600 transition-colors cursor-pointer after:absolute after:-inset-y-4 after:-inset-x-1" 
               title="Close"
             />
             <button 
@@ -464,7 +464,7 @@ export function TerminalPanel({ onClose, isExpanded = false, onExpand, greeting,
                   setIsMinimized(!isMinimized)
                 }
               }}
-              className="relative w-3 h-3 rounded-full bg-yellow-500 hover:bg-yellow-600 transition-colors cursor-pointer after:absolute after:-inset-3" 
+              className="relative w-3 h-3 rounded-full bg-yellow-500 hover:bg-yellow-600 transition-colors cursor-pointer after:absolute after:-inset-y-4 after:-inset-x-1" 
               title="Minimize"
             />
             <button 
@@ -473,7 +473,7 @@ export function TerminalPanel({ onClose, isExpanded = false, onExpand, greeting,
                 setIsMinimized(false)
                 if (onExpand) onExpand()
               }}
-              className="relative w-3 h-3 rounded-full bg-green-500 hover:bg-green-600 transition-colors cursor-pointer after:absolute after:-inset-3" 
+              className="relative w-3 h-3 rounded-full bg-green-500 hover:bg-green-600 transition-colors cursor-pointer after:absolute after:-inset-y-4 after:-inset-x-1" 
               title="Maximize"
             />
           </div>
@@ -533,7 +533,7 @@ export function TerminalPanel({ onClose, isExpanded = false, onExpand, greeting,
                     <span className="tracking-[0.2em] font-mono font-bold text-foreground">
                       {"*".repeat(input.length)}
                     </span>
-                    <span className="inline-block w-2.5 h-4 bg-primary animate-pulse ml-0.5" />
+                    <span className="inline-block w-2.5 h-4 bg-primary animate-pulse will-change-transform ml-0.5" />
                   </div>
                 ) : null}
 

@@ -120,7 +120,7 @@ When I am not staring at YAML, I am probably debugging a Dockerfile or automatin
                       rel="noopener noreferrer"
                       onMouseEnter={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: link.mascotState, message: link.mascotMessage } }))}
                       onMouseLeave={() => window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching" } }))}
-                      className="inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded-lg bg-surface border border-border text-muted-foreground hover:text-foreground hover:border-primary/30 transition-colors duration-200"
+                      className="inline-flex items-center gap-2 px-3 py-1.5 min-h-12 text-sm rounded-lg bg-surface border border-border text-muted-foreground hover:text-foreground hover:border-primary/30 transition-colors duration-200"
                     >
                       <link.icon weight="bold" className="w-4 h-4" />
                       {link.label}

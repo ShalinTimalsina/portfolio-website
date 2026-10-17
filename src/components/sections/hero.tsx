@@ -56,7 +56,7 @@ export function HeroSection({ content = {}, customCommands = [] }: { content?: R
           opacity: [0.5, 0.8, 0.5],
         }}
         transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-[10%] left-[15%] w-[400px] h-[400px] bg-primary/10 rounded-full blur-[120px] -z-10 pointer-events-none" 
+        className="absolute top-[10%] left-[15%] w-[400px] h-[400px] bg-primary/10 rounded-full blur-[120px] -z-10 pointer-events-none will-change-transform" 
       />
       <motion.div 
         animate={{
@@ -64,7 +64,7 @@ export function HeroSection({ content = {}, customCommands = [] }: { content?: R
           opacity: [0.3, 0.6, 0.3],
         }}
         transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-        className="absolute bottom-[20%] right-[10%] w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] -z-10 pointer-events-none" 
+        className="absolute bottom-[20%] right-[10%] w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] -z-10 pointer-events-none will-change-transform" 
       />
       
       <div className={cn(
@@ -98,7 +98,7 @@ export function HeroSection({ content = {}, customCommands = [] }: { content?: R
             className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border border-border bg-muted/50 w-fit"
           >
             <div className="relative flex items-center justify-center">
-              <div className="absolute w-2 h-2 rounded-full bg-primary animate-ping opacity-75" />
+              <div className="absolute w-2 h-2 rounded-full bg-primary animate-ping opacity-75 will-change-transform" />
               <div className="relative w-2 h-2 rounded-full bg-primary shadow-[0_0_10px_rgba(0,200,150,0.5)]" />
             </div>
             <span className="text-[11px] uppercase tracking-[0.15em] font-medium text-foreground">

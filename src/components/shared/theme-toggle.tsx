@@ -29,7 +29,7 @@ export function ThemeToggle() {
           detail: { state: "success", message: newTheme === "dark" ? "Going dark!" : "Let there be light!" } 
         }))
       }}
-      className="fixed top-4 right-4 md:top-6 md:right-6 z-[60] p-2.5 md:p-3 rounded-full border border-border bg-background/50 backdrop-blur-md text-muted-foreground hover:text-foreground hover:bg-muted transition-all active:scale-95 shadow-sm cursor-pointer"
+      className="fixed top-4 right-4 md:top-6 md:right-6 z-[60] min-w-12 min-h-12 p-2.5 md:p-3 rounded-full border border-border bg-background/50 backdrop-blur-md text-muted-foreground hover:text-foreground hover:bg-muted transition-all active:scale-95 shadow-sm cursor-pointer inline-flex items-center justify-center"
       aria-label="Toggle Theme"
     >
       <AnimatePresence mode="wait" initial={false}>
