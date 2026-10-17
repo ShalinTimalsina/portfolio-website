@@ -5,7 +5,7 @@ import { createPortal } from "react-dom"
 import { motion, AnimatePresence } from "motion/react"
 import { TerminalPanel } from "@/components/terminal/terminal-panel"
 import { MascotCompanion } from "@/components/mascot/mascot-companion"
-import { ArrowRight, EnvelopeSimple, TerminalWindow } from "@phosphor-icons/react"
+import { ArrowRight, EnvelopeSimple, TerminalWindow, MagnifyingGlass } from "@phosphor-icons/react"
 import { cn } from "@/lib/utils"
 
 export function HeroSection({ content = {}, customCommands = [] }: { content?: Record<string, any>, customCommands?: any[] }) {
@@ -85,8 +85,8 @@ export function HeroSection({ content = {}, customCommands = [] }: { content?: R
             }
           }}
           className={cn(
-            "flex flex-col gap-6",
-            isTerminalOpen ? "max-w-xl" : "max-w-3xl items-center"
+            "flex flex-col gap-6 items-center lg:items-start text-center lg:text-left",
+            isTerminalOpen ? "max-w-xl mx-auto lg:mx-0" : "max-w-3xl items-center text-center mx-auto"
           )}
         >
           <motion.div 
@@ -112,12 +112,12 @@ export function HeroSection({ content = {}, customCommands = [] }: { content?: R
               hidden: { opacity: 0, y: 16 },
               visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.32, 0.72, 0, 1] } }
             }}
-            className="flex flex-col gap-4"
+            className="flex flex-col gap-4 items-center lg:items-start w-full"
           >
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-heading font-semibold tracking-tight text-foreground">
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-heading font-semibold tracking-tight text-foreground text-center lg:text-left">
               {content["hero.heading"] || "Shalin Timalsina."}
             </h1>
-            <h2 className={cn("text-xl sm:text-2xl text-muted-foreground leading-relaxed text-balance font-normal", !isTerminalOpen && "mx-auto")}>
+            <h2 className={cn("text-xl sm:text-2xl text-muted-foreground leading-relaxed text-balance font-normal text-center lg:text-left", !isTerminalOpen && "mx-auto")}>
               {content["hero.subheading"] || "Cloud & DevOps Engineer in the making building resilient infrastructure and the interfaces to understand it."}
             </h2>
           </motion.div>
@@ -167,11 +167,30 @@ export function HeroSection({ content = {}, customCommands = [] }: { content?: R
               hidden: { opacity: 0, y: 16 },
               visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.32, 0.72, 0, 1] } }
             }}
-            className="pt-2"
+            className="pt-2 flex justify-center lg:justify-start w-full"
           >
-            <span className="text-sm text-muted-foreground flex items-center justify-center lg:justify-start gap-2">
-              Press <kbd className="px-2 py-0.5 rounded-md bg-muted text-xs border font-mono">{mounted && typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform) ? "⌘" : "Ctrl"} K</kbd> anywhere to search
-            </span>
+            <button
+              onClick={() => {
+                window.dispatchEvent(new CustomEvent("open-command-palette"))
+                window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "thinking", message: "Searching..." } }))
+              }}
+              className="group/kbd inline-flex items-center justify-center gap-2 px-4 py-2 min-h-[44px] sm:min-h-0 rounded-full border border-border bg-muted/50 hover:bg-muted text-xs text-muted-foreground hover:text-foreground transition-all duration-200 active:scale-95 shadow-sm cursor-pointer"
+              aria-label="Open Command Search"
+            >
+              <MagnifyingGlass className="w-3.5 h-3.5 text-primary" weight="bold" />
+              {/* Desktop / Keyboard view */}
+              <span className="hidden sm:inline-flex items-center gap-1.5">
+                <span>Press</span>
+                <kbd className="px-1.5 py-0.5 rounded bg-background text-[11px] border font-mono font-medium group-hover/kbd:border-primary/40 transition-colors">
+                  {mounted && typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform) ? "⌘" : "Ctrl"} K
+                </kbd>
+                <span>to search</span>
+              </span>
+              {/* Mobile touch view */}
+              <span className="inline-flex sm:hidden">
+                Tap to search
+              </span>
+            </button>
           </motion.div>
         </motion.div>
 

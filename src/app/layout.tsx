@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Outfit, Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/shared/theme-provider";
-import { ThemeToggle } from "@/components/shared/theme-toggle";
+import { HeaderActions } from "@/components/shared/header-actions";
 import { ScrollProgress } from "@/components/shared/scroll-progress";
 import { Toaster } from "sonner";
 import dynamic from "next/dynamic";
@@ -111,7 +111,7 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <ThemeToggle />
+          <HeaderActions />
           <ScrollProgress />
           {children}
           <CommandPalette />

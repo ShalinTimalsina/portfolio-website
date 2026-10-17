@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react"
 import { Command } from "cmdk"
 import { motion, AnimatePresence } from "motion/react"
 import { useRouter } from "next/navigation"
-import { Code, Terminal, User, EnvelopeSimple, BookOpen, MagnifyingGlass, ArrowElbowDownLeft, Moon, Sun } from "@phosphor-icons/react"
+import { Code, Terminal, User, EnvelopeSimple, BookOpen, MagnifyingGlass, ArrowElbowDownLeft, Moon, Sun, X } from "@phosphor-icons/react"
 import { toast } from "sonner"
 import { useTheme } from "next-themes"
 
@@ -16,8 +16,10 @@ export function CommandPalette() {
   useEffect(() => {
     if (open) {
       window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "thinking", message: "Looking for something?" } }))
+      window.dispatchEvent(new CustomEvent("palette-toggle", { detail: { open: true } }))
     } else {
       window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "watching" } }))
+      window.dispatchEvent(new CustomEvent("palette-toggle", { detail: { open: false } }))
     }
   }, [open])
 
@@ -29,8 +31,14 @@ export function CommandPalette() {
       }
     }
 
+    const handleOpen = () => setOpen(true)
+
     document.addEventListener("keydown", down)
-    return () => document.removeEventListener("keydown", down)
+    window.addEventListener("open-command-palette", handleOpen)
+    return () => {
+      document.removeEventListener("keydown", down)
+      window.removeEventListener("open-command-palette", handleOpen)
+    }
   }, [])
 
   const runCommand = (command: () => void, name: string) => {
@@ -101,7 +109,7 @@ export function CommandPalette() {
           open={open} 
           onOpenChange={setOpen}
           label="Global Command Menu"
-          className="fixed inset-0 z-50 flex items-start justify-center pt-[20vh] sm:pt-[25vh]"
+          className="fixed inset-0 z-[100] flex items-start justify-center pt-6 sm:pt-[20vh] p-4"
         >
           <motion.div
             initial={{ opacity: 0 }}
@@ -115,7 +123,7 @@ export function CommandPalette() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -20 }}
             transition={{ duration: 0.2, ease: [0.32, 0.72, 0, 1] }}
-            className="w-full max-w-xl mx-4 overflow-hidden rounded-xl border border-border bg-background dark:bg-surface relative shadow-[0_0_40px_rgba(0,200,150,0.1)] dark:shadow-[0_0_40px_rgba(0,200,150,0.1),inset_0_1px_0_rgba(255,255,255,0.06)]"
+            className="w-full max-w-xl overflow-hidden rounded-xl border border-border bg-background dark:bg-surface relative shadow-[0_0_40px_rgba(0,200,150,0.1)] dark:shadow-[0_0_40px_rgba(0,200,150,0.1),inset_0_1px_0_rgba(255,255,255,0.06)]"
           >
             <Command className="w-full flex flex-col bg-transparent">
               <div className="flex items-center border-b border-border px-4 gap-3">
@@ -124,9 +132,19 @@ export function CommandPalette() {
                   placeholder="Search projects, skills, links, or navigate..." 
                   className="w-full flex-1 bg-transparent py-4 text-base outline-none placeholder:text-muted-foreground text-foreground"
                 />
-                <div className="px-2 py-1 text-xs text-muted-foreground bg-muted dark:bg-muted/50 border border-border rounded-md font-mono shrink-0">
+                {/* Desktop: Esc key chip */}
+                <div className="hidden sm:block px-2 py-1 text-xs text-muted-foreground bg-muted dark:bg-muted/50 border border-border rounded-md font-mono shrink-0">
                   Esc
                 </div>
+                {/* Mobile: Tappable close action */}
+                <button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  className="sm:hidden min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted active:scale-90 transition-all cursor-pointer shrink-0"
+                  aria-label="Close command palette"
+                >
+                  <X className="w-5 h-5" weight="bold" />
+                </button>
               </div>
               <Command.List className="max-h-[300px] overflow-y-auto overflow-x-hidden p-2">
                 <Command.Empty className="py-12 text-center text-sm text-muted-foreground">
@@ -207,7 +225,8 @@ export function CommandPalette() {
 
               </Command.List>
               
-              <div className="flex items-center gap-4 border-t border-border px-4 py-3 bg-muted/50 dark:bg-muted/20 text-xs text-muted-foreground">
+              {/* Desktop keyboard cues */}
+              <div className="hidden sm:flex items-center gap-4 border-t border-border px-4 py-3 bg-muted/50 dark:bg-muted/20 text-xs text-muted-foreground">
                 <div className="flex items-center gap-1.5">
                   <span className="flex items-center justify-center w-5 h-5 bg-background border border-border rounded font-mono text-[10px]">↑</span>
                   <span className="flex items-center justify-center w-5 h-5 bg-background border border-border rounded font-mono text-[10px]">↓</span>
@@ -221,6 +240,12 @@ export function CommandPalette() {
                   <span className="flex items-center justify-center px-1.5 h-5 bg-background border border-border rounded font-mono text-[10px]">Esc</span>
                   <span>close</span>
                 </div>
+              </div>
+
+              {/* Mobile touch cues */}
+              <div className="flex sm:hidden items-center justify-between border-t border-border px-4 py-2.5 bg-muted/50 dark:bg-muted/20 text-xs text-muted-foreground">
+                <span className="font-medium text-foreground/80">Tap any item to jump</span>
+                <span className="text-[10px] text-muted-foreground font-mono">Tap outside to close</span>
               </div>
             </Command>
           </motion.div>
