@@ -117,10 +117,12 @@ export default async function RootLayout({
           <CommandPalette />
           <MascotCompanion customLines={allMascotLines} />
           <Toaster
-            position="bottom-right"
+            position="top-center"
             theme="system"
+            duration={2200}
+            visibleToasts={2}
             toastOptions={{
-              className: "!bg-surface !border-border !text-foreground",
+              className: "!bg-surface/90 !backdrop-blur-md !border-border !text-foreground !text-xs !rounded-full !px-4 !py-2 !shadow-lg",
               style: {
                 background: "var(--color-surface, hsl(var(--surface)))",
                 border: "1px solid hsl(var(--border))",

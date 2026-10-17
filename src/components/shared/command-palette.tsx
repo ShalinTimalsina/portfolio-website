@@ -5,7 +5,6 @@ import { Command } from "cmdk"
 import { motion, AnimatePresence } from "motion/react"
 import { useRouter } from "next/navigation"
 import { Code, Terminal, User, EnvelopeSimple, BookOpen, MagnifyingGlass, ArrowElbowDownLeft, Moon, Sun, X } from "@phosphor-icons/react"
-import { toast } from "sonner"
 import { useTheme } from "next-themes"
 
 export function CommandPalette() {
@@ -44,14 +43,11 @@ export function CommandPalette() {
   const runCommand = (command: () => void, name: string) => {
     window.dispatchEvent(new CustomEvent("mascot-action", { detail: { state: "success", message: "Found it!" } }))
     
-    // HCI Gulf of Evaluation: Give the user 150ms to perceive their selection was successful before disappearing
+    // Smooth transition: brief delay for selection feedback before closing
     setTimeout(() => {
       setOpen(false)
       command()
-      toast(`Executed: ${name}`, {
-        icon: <Terminal className="w-4 h-4 text-primary" />,
-      })
-    }, 150)
+    }, 120)
   }
 
   const navItems = [
