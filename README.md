@@ -4,15 +4,15 @@
 
 **Personal portfolio, interactive terminal, and blog for a Cloud & DevOps engineer.**
 
-<a href="https://nextjs.org/" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Next.js-16_App_Router-black?style=for-the-badge&logo=next.js" alt="Next.js" /></a>
-<a href="https://react.dev/" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React" /></a>
-<a href="https://www.typescriptlang.org/" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/TypeScript-5.x_Strict-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" /></a>
-<a href="https://tailwindcss.com/" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" /></a>
-<a href="https://orm.drizzle.team/" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/Drizzle_ORM-PostgreSQL-C5F74F?style=for-the-badge&logo=drizzle&logoColor=black" alt="Drizzle ORM" /></a>
+[![Next.js](https://img.shields.io/badge/Next.js-16_App_Router-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x_Strict-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Drizzle ORM](https://img.shields.io/badge/Drizzle_ORM-PostgreSQL-C5F74F?style=for-the-badge&logo=drizzle&logoColor=black)](https://orm.drizzle.team/)
 
 <br />
 
-<a href="https://shalintimalsina.com.np" target="_blank" rel="noopener noreferrer">Live Website</a> • <a href="https://www.linkedin.com/in/shalin-timalsina11" target="_blank" rel="noopener noreferrer">LinkedIn</a> • <a href="https://github.com/ShalinTimalsina" target="_blank" rel="noopener noreferrer">GitHub</a>
+[Live Website](https://shalintimalsina.com.np) • [LinkedIn](https://www.linkedin.com/in/shalin-timalsina11) • [GitHub](https://github.com/ShalinTimalsina)
 
 </div>
 
@@ -111,7 +111,7 @@ Follow these steps to run the project on your computer.
 ### Prerequisites
 * **Node.js** version 20 or higher installed
 * **npm** or **pnpm** installed
-* A free **PostgreSQL database** (like <a href="https://neon.tech" target="_blank" rel="noopener noreferrer">Neon</a>)
+* A free **PostgreSQL database** (like [Neon](https://neon.tech))
 
 ### 1. Download the code
 ```bash
@@ -150,7 +150,7 @@ Run the local development server:
 npm run dev
 ```
 
-Open <a href="http://localhost:3000" target="_blank" rel="noopener noreferrer">http://localhost:3000</a> in your web browser to see the site.
+Open [http://localhost:3000](http://localhost:3000) in your web browser to see the site.
 
 ---
 
@@ -181,13 +181,13 @@ Open <a href="http://localhost:3000" target="_blank" rel="noopener noreferrer">h
 **Shalin Timalsina**  
 *Cloud & DevOps Engineer in the making*
 
-* **Website:** <a href="https://shalintimalsina.com.np" target="_blank" rel="noopener noreferrer">shalintimalsina.com.np</a>
-* **GitHub:** <a href="https://github.com/ShalinTimalsina" target="_blank" rel="noopener noreferrer">@ShalinTimalsina</a>
-* **LinkedIn:** <a href="https://www.linkedin.com/in/shalin-timalsina11" target="_blank" rel="noopener noreferrer">Shalin Timalsina</a>
-* **Email:** <a href="mailto:salintimalsina01@gmail.com" target="_blank" rel="noopener noreferrer">salintimalsina01@gmail.com</a>
+* **Website:** [shalintimalsina.com.np](https://shalintimalsina.com.np)
+* **GitHub:** [@ShalinTimalsina](https://github.com/ShalinTimalsina)
+* **LinkedIn:** [Shalin Timalsina](https://www.linkedin.com/in/shalin-timalsina11)
+* **Email:** [salintimalsina01@gmail.com](mailto:salintimalsina01@gmail.com)
 
 ---
 
 ## License
 
-This project is licensed under the <a href="LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a>.
+This project is licensed under the [MIT License](LICENSE).
